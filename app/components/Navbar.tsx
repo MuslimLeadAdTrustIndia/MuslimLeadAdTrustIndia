@@ -12,7 +12,7 @@ export function TrustLogo() {
         <img
           src="/images/logo-emblem.png"
           alt="Muslim Legal Aid Trust (India) Logo"
-          className="w-full h-full object-contain mix-blend-multiply"
+          className="w-full h-full object-contain"
         />
       </div>
 
