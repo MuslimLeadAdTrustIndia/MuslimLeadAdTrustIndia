@@ -91,7 +91,7 @@ export default function Navbar() {
             <div className="absolute top-full left-0 w-64 pt-2 invisible opacity-0 translate-y-1.5 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 z-50">
               <div className="bg-white rounded-2xl shadow-[0_12px_36px_rgba(13,35,58,0.12)] border border-slate-100 p-2 space-y-1">
                 <Link
-                  href="/#about"
+                  href="/about"
                   className="block p-2.5 rounded-xl hover:bg-[#F0F6FF] transition-colors group/item"
                 >
                   <div className="text-[13.5px] font-bold text-[#0D233A] group-hover/item:text-[#0066FF] transition-colors">
@@ -103,7 +103,7 @@ export default function Navbar() {
                 </Link>
 
                 <Link
-                  href="/#office-bearers"
+                  href="/office-bearers"
                   className="block p-2.5 rounded-xl hover:bg-[#F0F6FF] transition-colors group/item"
                 >
                   <div className="text-[13.5px] font-bold text-[#0D233A] group-hover/item:text-[#0066FF] transition-colors">
@@ -162,7 +162,7 @@ export default function Navbar() {
                 </Link>
 
                 <Link
-                  href="/#prisoners"
+                  href="/prisoners"
                   className="block p-2.5 rounded-xl hover:bg-[#F0F6FF] transition-colors group/item"
                 >
                   <div className="text-[13.5px] font-bold text-[#0D233A] group-hover/item:text-[#0066FF] transition-colors">
@@ -174,7 +174,7 @@ export default function Navbar() {
                 </Link>
 
                 <Link
-                  href="/#legal-help"
+                  href="/legal-help"
                   className="block p-2.5 rounded-xl hover:bg-[#F0F6FF] transition-colors group/item"
                 >
                   <div className="text-[13.5px] font-bold text-[#0D233A] group-hover/item:text-[#0066FF] transition-colors">
@@ -190,7 +190,7 @@ export default function Navbar() {
 
           {/* 4. Gallery */}
           <Link
-            href="/#gallery"
+            href="/gallery"
             className="px-3.5 py-2 rounded-full text-[14px] font-medium text-[#3A4D63] hover:text-[#0066FF] hover:bg-slate-50 transition-colors"
           >
             Gallery
@@ -201,7 +201,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {/* Donate Button */}
           <Link
-            href="/#donation"
+            href="/donate"
             className="hidden sm:inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-[#0066FF] hover:text-[#0052CC] bg-blue-50/80 hover:bg-blue-100/80 border border-blue-200/80 px-4 py-2 rounded-full transition-all"
           >
             <svg
@@ -222,7 +222,7 @@ export default function Navbar() {
 
           {/* Contact Us Button */}
           <Link
-            href="/#contact"
+            href="/contact"
             className="hidden sm:inline-flex items-center gap-2 bg-[#0D233A] hover:bg-[#163554] text-white text-[13.5px] font-semibold px-5 py-2.5 rounded-full transition-all shadow-sm"
           >
             <span>Contact Us</span>
@@ -317,14 +317,14 @@ export default function Navbar() {
             {mobileAboutOpen && (
               <div className="ml-4 pl-3 border-l-2 border-slate-100 space-y-1 my-1">
                 <Link
-                  href="/#about"
+                  href="/about"
                   onClick={() => setMobileMenuOpen(false)}
                   className="block px-3 py-2 rounded-lg text-[13.5px] font-medium text-[#4A5D73] hover:text-[#0066FF] hover:bg-slate-50"
                 >
                   About the Trust
                 </Link>
                 <Link
-                  href="/#office-bearers"
+                  href="/office-bearers"
                   onClick={() => setMobileMenuOpen(false)}
                   className="block px-3 py-2 rounded-lg text-[13.5px] font-medium text-[#4A5D73] hover:text-[#0066FF] hover:bg-slate-50"
                 >
@@ -373,14 +373,14 @@ export default function Navbar() {
                   Our Registered Aims (45+ Aims)
                 </Link>
                 <Link
-                  href="/#prisoners"
+                  href="/prisoners"
                   onClick={() => setMobileMenuOpen(false)}
                   className="block px-3 py-2 rounded-lg text-[13.5px] font-medium text-[#4A5D73] hover:text-[#0066FF] hover:bg-slate-50"
                 >
                   Muslim Prisoners Welfare
                 </Link>
                 <Link
-                  href="/#legal-help"
+                  href="/legal-help"
                   onClick={() => setMobileMenuOpen(false)}
                   className="block px-3 py-2 rounded-lg text-[13.5px] font-medium text-[#4A5D73] hover:text-[#0066FF] hover:bg-slate-50"
                 >
@@ -392,7 +392,7 @@ export default function Navbar() {
 
           {/* Gallery */}
           <Link
-            href="/#gallery"
+            href="/gallery"
             onClick={() => setMobileMenuOpen(false)}
             className="block px-4 py-2.5 rounded-xl text-[14.5px] font-semibold text-[#3A4D63] hover:bg-slate-50"
           >
@@ -402,7 +402,7 @@ export default function Navbar() {
           {/* Mobile CTA Buttons */}
           <div className="pt-3 border-t border-slate-100 grid grid-cols-2 gap-2">
             <Link
-              href="/#donation"
+              href="/donate"
               onClick={() => setMobileMenuOpen(false)}
               className="text-center bg-blue-50 text-[#0066FF] border border-blue-200/80 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-1.5"
             >
@@ -423,7 +423,7 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href="/#contact"
+              href="/contact"
               onClick={() => setMobileMenuOpen(false)}
               className="text-center bg-[#0D233A] text-white py-2.5 rounded-xl text-sm font-bold"
             >

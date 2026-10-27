@@ -1093,7 +1093,7 @@ export default function OurAimsPage() {
 
         {/* Bottom CTA for Legal Help & Support */}
         <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-          <div className="bg-gradient-to-r from-[#1A56DB] to-[#0D233A] rounded-3xl p-8 sm:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-lg">
+          <div className="bg-gradient-to-r from-[#1A56DB] to-[#0D233A] rounded-3xl p-6 sm:p-10 lg:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-lg">
             <div>
               <h3 className="text-2xl sm:text-3xl font-extrabold">
                 Do You or a Family Member Need Free Legal Aid?
@@ -1103,16 +1103,16 @@ export default function OurAimsPage() {
                 poor victims, and marginalized individuals across India.
               </p>
             </div>
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
               <Link
-                href="/#contact"
-                className="bg-white text-[#0D233A] hover:bg-slate-100 px-6 py-3 rounded-full text-sm font-bold transition-all shadow-md"
+                href="/contact"
+                className="flex-1 sm:flex-none text-center bg-white text-[#0D233A] hover:bg-slate-100 px-6 py-3 rounded-full text-sm font-bold transition-all shadow-md"
               >
                 Apply for Legal Help
               </Link>
               <Link
-                href="/#donation"
-                className="bg-[#00A3FF] hover:bg-[#008FE0] text-white px-6 py-3 rounded-full text-sm font-bold transition-all shadow-md"
+                href="/donate"
+                className="flex-1 sm:flex-none text-center bg-[#00A3FF] hover:bg-[#008FE0] text-white px-6 py-3 rounded-full text-sm font-bold transition-all shadow-md"
               >
                 Donate to the Cause
               </Link>
@@ -1184,7 +1184,7 @@ export default function OurAimsPage() {
                 Close
               </button>
               <Link
-                href="/#contact"
+                href="/contact"
                 className="px-5 py-2.5 rounded-full bg-[#0066FF] hover:bg-[#0052CC] text-white text-sm font-semibold transition-colors"
               >
                 Contact for this Cause

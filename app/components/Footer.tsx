@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { TrustLogo } from "./Navbar";
 
 export default function Footer() {
@@ -21,17 +22,17 @@ export default function Footer() {
             </h3>
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-[13px] font-medium text-[#52657A]">
               <div className="flex flex-col space-y-2">
-                <a href="/" className="hover:text-[#0066FF] transition-colors">
+                <Link href="/" className="hover:text-[#0066FF] transition-colors">
                   Home
-                </a>
+                </Link>
                 <a
-                  href="/#about"
+                  href="/about"
                   className="hover:text-[#0066FF] transition-colors"
                 >
                   About Us
                 </a>
                 <a
-                  href="/#office-bearers"
+                  href="/office-bearers"
                   className="hover:text-[#0066FF] transition-colors"
                 >
                   Office Bearers
@@ -46,31 +47,31 @@ export default function Footer() {
 
               <div className="flex flex-col space-y-2">
                 <a
-                  href="/#prisoners"
+                  href="/prisoners"
                   className="hover:text-[#0066FF] transition-colors"
                 >
                   Muslim Prisoners
                 </a>
                 <a
-                  href="/#legal-help"
+                  href="/legal-help"
                   className="hover:text-[#0066FF] transition-colors"
                 >
                   Legal Help
                 </a>
                 <a
-                  href="/#gallery"
+                  href="/gallery"
                   className="hover:text-[#0066FF] transition-colors"
                 >
                   Gallery
                 </a>
                 <a
-                  href="/#donation"
+                  href="/donate"
                   className="hover:text-[#0066FF] transition-colors"
                 >
                   Donation
                 </a>
                 <a
-                  href="/#contact"
+                  href="/contact"
                   className="hover:text-[#0066FF] transition-colors"
                 >
                   Contact Us
