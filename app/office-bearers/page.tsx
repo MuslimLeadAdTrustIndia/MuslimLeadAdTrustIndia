@@ -2,35 +2,50 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import PageHero from "../components/PageHero";
+import { getOfficeBearers } from "../lib/server/content";
 
-const committeeRoles = [
+export const instant = false;
+
+const fallbackCommitteeRoles = [
   {
-    role: "Vice Chairman",
-    desc: "Assists the Chairman in strategic direction, judicial liaison and inter-state coordination of legal aid camps.",
+    id: 1,
+    role_en: "Vice Chairman",
+    description_en: "Assists the Chairman in strategic direction, judicial liaison and inter-state coordination of legal aid camps.",
+    name_en: "Office Bearer",
   },
   {
-    role: "General Secretary",
-    desc: "Oversees day-to-day administration, correspondence with government bodies, and the Trust's annual reporting.",
+    id: 2,
+    role_en: "General Secretary",
+    description_en: "Oversees day-to-day administration, correspondence with government bodies, and the Trust's annual reporting.",
+    name_en: "Office Bearer",
   },
   {
-    role: "Treasurer",
-    desc: "Manages donations, disbursement of welfare funds, and statutory financial compliance of the Trust.",
+    id: 3,
+    role_en: "Treasurer",
+    description_en: "Manages donations, disbursement of welfare funds, and statutory financial compliance of the Trust.",
+    name_en: "Office Bearer",
   },
   {
-    role: "Joint Secretary",
-    desc: "Coordinates between district-level volunteers, legal clinics and the central executive committee.",
+    id: 4,
+    role_en: "Joint Secretary",
+    description_en: "Coordinates between district-level volunteers, legal clinics and the central executive committee.",
+    name_en: "Office Bearer",
   },
   {
-    role: "Legal Advisor",
-    desc: "Panel of empanelled advocates guiding case strategy for prisoners' welfare and constitutional matters.",
+    id: 5,
+    role_en: "Legal Advisor",
+    description_en: "Panel of empanelled advocates guiding case strategy for prisoners' welfare and constitutional matters.",
+    name_en: "Office Bearer",
   },
   {
-    role: "Media & Outreach Coordinator",
-    desc: "Handles awareness campaigns, community outreach and public communication on behalf of the Trust.",
+    id: 6,
+    role_en: "Media & Outreach Coordinator",
+    description_en: "Handles awareness campaigns, community outreach and public communication on behalf of the Trust.",
+    name_en: "Office Bearer",
   },
 ];
 
-const cells = [
+const fallbackCells = [
   "Anti-Mob Lynching Cell",
   "Legal & Court Penal Cell",
   "Anti-Cyber Fraud Cell",
@@ -41,7 +56,24 @@ const cells = [
   "Muslim Legal Education Cell",
 ];
 
-export default function OfficeBearersPage() {
+export default async function OfficeBearersPage() {
+  const dbBearers = await getOfficeBearers();
+
+  // Find chairman strictly
+  const chairman =
+    dbBearers.find((b) => b.role_en.toLowerCase() === "chairman") ||
+    dbBearers.find((b) => b.role_en.toLowerCase().includes("chairman") && !b.role_en.toLowerCase().includes("vice")) || {
+      name_en: "Advocate Momin Malik",
+      name_hi: "एडवोकेट मोमिन मलिक",
+      role_en: "Chairman",
+      description_en:
+        "Leading the Trust's legal and humanitarian mission, Advocate Momin Malik has personally represented numerous petitions before the Courts of Haryana — including the landmark petition in the Court of CJM / Civil Judge, Panipat — on behalf of victims of injustice and the Muslim community at large.",
+      address_en: "Chamber No. 177, District & Sessions Courts, Panipat, Haryana",
+    };
+
+  const otherBearers = dbBearers.filter((b) => b !== chairman);
+  const displayBearers = otherBearers.length > 0 ? otherBearers : fallbackCommitteeRoles;
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F8FC]">
       <Navbar />
@@ -56,55 +88,56 @@ export default function OfficeBearersPage() {
         />
 
         {/* Chairman Spotlight */}
-        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 -mt-7">
+        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-12">
           <div className="bg-white rounded-3xl shadow-[0_10px_35px_rgba(13,35,58,0.08)] border border-slate-200/80 p-6 sm:p-10 lg:p-12">
             <p className="text-[12px] sm:text-[13px] font-bold uppercase tracking-[0.16em] text-[#2B70C9] mb-5">
-              CHAIRMAN
+              CHAIRMAN • अध्यक्ष
             </p>
             <div className="flex flex-col sm:flex-row items-start gap-6">
-              <div className="w-20 h-20 rounded-full bg-[#0D233A] text-white flex items-center justify-center shrink-0 font-bold text-2xl shadow-md">
-                MM
+              <div className="w-20 h-20 rounded-full bg-[#0D233A] text-white flex items-center justify-center shrink-0 font-bold text-2xl shadow-md uppercase">
+                {chairman.name_en
+                  .split(" ")
+                  .map((n: string) => n[0])
+                  .slice(0, 2)
+                  .join("")}
               </div>
               <div>
                 <h2 className="text-[22px] sm:text-[26px] font-extrabold text-[#0D233A] tracking-tight">
-                  Advocate Momin Malik
+                  {chairman.name_en}
                 </h2>
+                {chairman.name_hi && (
+                  <p className="text-[15px] font-bold text-[#9A6B26] mt-0.5">{chairman.name_hi}</p>
+                )}
                 <p className="text-[14px] font-semibold text-[#0066FF] mt-1">
-                  Chairman, Muslim Legal Aid Trust (India)
+                  {chairman.role_en}, Muslim Legal Aid Trust (India)
                 </p>
                 <p className="mt-3 text-[14.5px] leading-relaxed text-[#4A5D73] max-w-2xl">
-                  Leading the Trust&apos;s legal and humanitarian mission,
-                  Advocate Momin Malik has personally represented numerous
-                  petitions before the Courts of Haryana — including the
-                  landmark petition in the Court of CJM / Civil Judge,
-                  Panipat — on behalf of victims of injustice and the Muslim
-                  community at large.
+                  {chairman.description_en}
                 </p>
-                <div className="mt-4 flex items-center gap-2.5 text-[13px] text-[#52657A]">
-                  <svg
-                    className="w-4 h-4 text-[#0D233A]"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.8}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.8}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                  <span>
-                    Chamber No. 177, District &amp; Sessions Courts, Panipat,
-                    Haryana
-                  </span>
-                </div>
+                {chairman.address_en && (
+                  <div className="mt-4 flex items-center gap-2.5 text-[13px] text-[#52657A]">
+                    <svg
+                      className="w-4 h-4 text-[#0D233A]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.8}
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.8}
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    <span>{chairman.address_en}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -126,19 +159,22 @@ export default function OfficeBearersPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {committeeRoles.map((item, idx) => (
+            {displayBearers.map((item, idx) => (
               <div
-                key={idx}
+                key={item.id || idx}
                 className="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm hover:shadow-lg hover:border-slate-300 transition-all"
               >
                 <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#0D233A] text-white text-[11px] font-bold tracking-wider uppercase">
-                  Office Bearer
+                  {item.name_en && item.name_en !== "Executive Committee Member" ? item.name_en : "Office Bearer"}
                 </span>
                 <h3 className="mt-3.5 text-[17px] font-extrabold text-[#0D233A] leading-snug">
-                  {item.role}
+                  {item.role_en}
                 </h3>
+                {item.role_hi && (
+                  <p className="text-[12px] font-medium text-slate-500">{item.role_hi}</p>
+                )}
                 <p className="mt-2.5 text-[13.5px] leading-relaxed text-[#4A5D73]">
-                  {item.desc}
+                  {item.description_en}
                 </p>
               </div>
             ))}
@@ -160,7 +196,7 @@ export default function OfficeBearersPage() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-              {cells.map((cell, idx) => (
+              {fallbackCells.map((cell, idx) => (
                 <div
                   key={idx}
                   className="bg-white/10 hover:bg-white/15 transition-all backdrop-blur-sm border border-white/10 hover:border-white/20 rounded-2xl p-5"

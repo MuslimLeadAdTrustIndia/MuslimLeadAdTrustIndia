@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 export default function PrisonersAndSupportSection() {
   return (
@@ -42,8 +43,8 @@ export default function PrisonersAndSupportSection() {
           </p>
 
           <div className="mt-5 sm:mt-6">
-            <a
-              href="#prisoners-more"
+            <Link
+              href="/prisoners"
               className="inline-flex items-center gap-2.5 bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-semibold px-6 py-3 rounded-full shadow-[0_4px_14px_rgba(0,102,255,0.28)] transition-all"
             >
               <span>Learn More</span>
@@ -60,7 +61,7 @@ export default function PrisonersAndSupportSection() {
                   d="M14 5l7 7m0 0l-7 7m7-7H3"
                 />
               </svg>
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -107,8 +108,8 @@ export default function PrisonersAndSupportSection() {
             </p>
 
             <div className="mt-5">
-              <a
-                href="#get-legal-support"
+              <Link
+                href="/legal-help"
                 className="inline-flex items-center gap-2 bg-[#0066FF] hover:bg-[#0052CC] text-white text-[13.5px] font-semibold px-5 py-2.5 rounded-full shadow-[0_4px_14px_rgba(0,102,255,0.28)] transition-all"
               >
                 <span>Get Legal Support</span>
@@ -125,7 +126,7 @@ export default function PrisonersAndSupportSection() {
                     d="M14 5l7 7m0 0l-7 7m7-7H3"
                   />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -155,8 +156,8 @@ export default function PrisonersAndSupportSection() {
             </p>
 
             <div className="mt-5">
-              <a
-                href="#family-support"
+              <Link
+                href="/prisoners"
                 className="inline-flex items-center gap-2 bg-[#0066FF] hover:bg-[#0052CC] text-white text-[13.5px] font-semibold px-5 py-2.5 rounded-full shadow-[0_4px_14px_rgba(0,102,255,0.28)] transition-all"
               >
                 <span>Learn More</span>
@@ -173,7 +174,7 @@ export default function PrisonersAndSupportSection() {
                     d="M14 5l7 7m0 0l-7 7m7-7H3"
                   />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

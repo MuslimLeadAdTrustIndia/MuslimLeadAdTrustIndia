@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Noto_Sans_Devanagari } from "next/font/google";
+import FocusRefresher from "./components/FocusRefresher";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${jakarta.variable} ${devanagari.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#F5F8FC] text-[#0E2238] font-sans">
+        <FocusRefresher />
         {children}
       </body>
     </html>

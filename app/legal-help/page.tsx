@@ -2,44 +2,55 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import PageHero from "../components/PageHero";
+import { getLegalHelpContent } from "../lib/server/content";
 
-const practiceAreas = [
-  {
-    title: "Bail Assistance & Rehabilitation",
-    text: "Filing timely bail applications, furnishing sureties, and post-release reintegration support.",
-  },
-  {
-    title: "Civil, Criminal & Constitutional Aid",
-    text: "Full-spectrum litigation assistance in trial courts, High Courts and the Supreme Court.",
-  },
-  {
-    title: "Public Interest Litigation",
-    text: "Strategic PILs defending constitutional guarantees and civil liberties for the community.",
-  },
-  {
-    title: "Mediation & Family Disputes",
-    text: "Peaceful alternative dispute resolution for matrimonial, family and community conflicts.",
-  },
-  {
-    title: "Protection of Religious & Waqf Property",
-    text: "Legal defense of mosques, dargahs, graveyards and heritage sites against encroachment.",
-  },
-  {
-    title: "Legal Literacy Camps",
-    text: "On-ground legal aid camps in villages, backward tehsils, and urban slums.",
-  },
-];
+export const instant = false;
 
-const eligibility = [
-  "Under-trial and sentenced prisoners in Indian jails",
-  "Orphans, widows, senior citizens and handicapped persons",
-  "Victims of injustice, hate crimes, or false implication",
-  "Indian nationals facing trial abroad",
-  "Poor law students seeking financial or mentorship aid",
-  "Anyone unable to afford legal representation",
-];
+export default async function LegalHelpPage() {
+  const { intro, areas, eligibility } = await getLegalHelpContent();
 
-export default function LegalHelpPage() {
+  const displayAreas =
+    areas && areas.length > 0
+      ? areas
+      : [
+          {
+            title_en: "Bail Assistance & Rehabilitation",
+            text_en: "Filing timely bail applications, furnishing sureties, and post-release reintegration support.",
+          },
+          {
+            title_en: "Civil, Criminal & Constitutional Aid",
+            text_en: "Full-spectrum litigation assistance in trial courts, High Courts and the Supreme Court.",
+          },
+          {
+            title_en: "Public Interest Litigation",
+            text_en: "Strategic PILs defending constitutional guarantees and civil liberties for the community.",
+          },
+          {
+            title_en: "Mediation & Family Disputes",
+            text_en: "Peaceful alternative dispute resolution for matrimonial, family and community conflicts.",
+          },
+          {
+            title_en: "Protection of Religious & Waqf Property",
+            text_en: "Legal defense of mosques, dargahs, graveyards and heritage sites against encroachment.",
+          },
+          {
+            title_en: "Legal Literacy Camps",
+            text_en: "On-ground legal aid camps in villages, backward tehsils, and urban slums.",
+          },
+        ];
+
+  const displayEligibility =
+    eligibility && eligibility.length > 0
+      ? eligibility
+      : [
+          { text_en: "Under-trial and sentenced prisoners in Indian jails" },
+          { text_en: "Orphans, widows, senior citizens and handicapped persons" },
+          { text_en: "Victims of injustice, hate crimes, or false implication" },
+          { text_en: "Indian nationals facing trial abroad" },
+          { text_en: "Poor law students seeking financial or mentorship aid" },
+          { text_en: "Anyone unable to afford legal representation" },
+        ];
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F8FC]">
       <Navbar />
@@ -54,7 +65,7 @@ export default function LegalHelpPage() {
         />
 
         {/* Image + Intro */}
-        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 -mt-7">
+        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-12">
           <div className="bg-white rounded-3xl shadow-[0_10px_35px_rgba(13,35,58,0.08)] border border-slate-200/80 p-6 sm:p-10 lg:p-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               <div className="lg:col-span-6">
@@ -62,13 +73,14 @@ export default function LegalHelpPage() {
                   GUIDANCE. SUPPORT. REPRESENTATION.
                 </p>
                 <h2 className="text-[26px] sm:text-[30px] font-extrabold text-[#0D233A] tracking-tight leading-tight">
-                  No One Should Be Denied Justice for Lack of Means
+                  {intro.title_en || "No One Should Be Denied Justice for Lack of Means"}
                 </h2>
+                {intro.title_hi && (
+                  <p className="text-[15px] font-bold text-[#9A6B26] mt-1">{intro.title_hi}</p>
+                )}
                 <p className="mt-4 text-[15px] leading-[1.75] text-[#4A5D73]">
-                  Our empanelled advocates take up cases at trial courts, High
-                  Courts and the Supreme Court — from bail pleas to
-                  constitutional petitions — ensuring that financial
-                  incapacity never stands between a person and justice.
+                  {intro.description_en ||
+                    "Our empanelled advocates take up cases at trial courts, High Courts and the Supreme Court — from bail pleas to constitutional petitions — ensuring that financial incapacity never stands between a person and justice."}
                 </p>
                 <div className="mt-6">
                   <Link
@@ -118,7 +130,7 @@ export default function LegalHelpPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {practiceAreas.map((item, idx) => (
+            {displayAreas.map((item, idx) => (
               <div
                 key={idx}
                 className="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-lg hover:border-slate-300 transition-all p-6"
@@ -127,10 +139,13 @@ export default function LegalHelpPage() {
                   Practice Area
                 </span>
                 <h3 className="mt-3.5 text-[16.5px] font-extrabold text-[#0D233A] leading-snug">
-                  {item.title}
+                  {item.title_en}
                 </h3>
+                {item.title_hi && (
+                  <p className="text-[12px] font-medium text-slate-500 mt-0.5">{item.title_hi}</p>
+                )}
                 <p className="mt-2.5 text-[13.5px] leading-relaxed text-[#4A5D73]">
-                  {item.text}
+                  {item.text_en}
                 </p>
               </div>
             ))}
@@ -148,7 +163,7 @@ export default function LegalHelpPage() {
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {eligibility.map((item, idx) => (
+              {displayEligibility.map((item, idx) => (
                 <div
                   key={idx}
                   className="flex items-start gap-3 bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl p-4"
@@ -166,7 +181,7 @@ export default function LegalHelpPage() {
                       d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                     />
                   </svg>
-                  <span className="text-[14px] text-slate-200">{item}</span>
+                  <span className="text-[14px] text-slate-200">{item.text_en}</span>
                 </div>
               ))}
             </div>

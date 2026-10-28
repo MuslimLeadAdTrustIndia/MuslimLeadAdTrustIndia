@@ -1,11 +1,10 @@
-"use client";
+﻿"use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import AdminIcon, { IconName } from "./icons";
 import { AdminToastProvider, useAdminToast } from "./Toast";
-import { adminLogout, getAdminSession } from "../../lib/adminAuth";
 
 interface NavItem {
   label: string;
@@ -48,6 +47,7 @@ const navGroups: NavGroup[] = [
     items: [
       { label: "Contact Leads", href: "/admin/leads", icon: "inbox" },
       { label: "Donations", href: "/admin/donations", icon: "heart" },
+      { label: "Members", href: "/admin/members", icon: "star" },
     ],
   },
   {
@@ -61,6 +61,26 @@ const navGroups: NavGroup[] = [
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  const [pending, setPending] = useState<Record<string, number>>({});
+
+  // Refresh the pending-donations badge on every admin navigation.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/admin/stats", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!cancelled && d) {
+          setPending({
+            "/admin/donations": Number(d.pendingDonations) || 0,
+            "/admin/members": Number(d.pendingMembers) || 0,
+          });
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
 
   return (
     <div className="flex flex-col h-full bg-[#0D233A]">
@@ -80,7 +100,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-6">
+      <nav className="sidebar-scroll flex-1 overflow-y-auto px-3 py-5 space-y-6">
         {navGroups.map((group) => (
           <div key={group.label}>
             <p className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-slate-500 px-3 mb-2">
@@ -102,6 +122,11 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                   >
                     <AdminIcon name={item.icon} className="w-[18px] h-[18px] shrink-0" />
                     <span>{item.label}</span>
+                    {(pending[item.href] ?? 0) > 0 && (
+                      <span className="ml-auto min-w-[20px] h-5 px-1.5 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">
+                        {pending[item.href]}
+                      </span>
+                    )}
                   </Link>
                 );
               })}
@@ -140,12 +165,20 @@ function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
   const { showToast } = useAdminToast();
   const [profileOpen, setProfileOpen] = useState(false);
   const { title } = pageTitleFromPath(pathname);
-  const session = getAdminSession();
+  const [session, setSession] = useState<{ name: string; email: string } | null>(null);
 
-  const handleLogout = () => {
-    adminLogout();
+  useEffect(() => {
+    fetch("/api/admin/me")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d && setSession(d))
+      .catch(() => {});
+  }, []);
+
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", { method: "POST" });
     showToast("You have been logged out.", "info");
     router.push("/admin/login");
+    router.refresh();
   };
 
   return (
@@ -172,7 +205,7 @@ function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
         <button
           className="relative w-10 h-10 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-500 transition-colors"
           aria-label="Notifications"
-          onClick={() => showToast("You're all caught up — no new notifications.", "info")}
+          onClick={() => showToast("You're all caught up â€” no new notifications.", "info")}
         >
           <AdminIcon name="bell" className="w-[19px] h-[19px]" />
           <span className="absolute top-2 right-2.5 w-2 h-2 rounded-full bg-[#0066FF]" />

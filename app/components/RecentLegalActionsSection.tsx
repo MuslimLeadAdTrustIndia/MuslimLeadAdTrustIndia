@@ -1,6 +1,28 @@
 import React from "react";
 
-export default function RecentLegalActionsSection() {
+interface LegalActionItem {
+  id: number;
+  title_en: string;
+  title_hi?: string;
+  court_en: string;
+  court_hi?: string;
+  status: "Active" | "Pending" | "Resolved";
+  action_date: string;
+  summary_en: string;
+  summary_hi?: string;
+}
+
+export default function RecentLegalActionsSection({ cases }: { cases?: LegalActionItem[] }) {
+  const topCase = cases && cases.length > 0 ? cases[0] : {
+    title_en: "Panipat Court Issues Notice to Nazia Elahi Khan on Petition Filed by Advocate Momin Malik",
+    court_en: "Court of CJM / Civil Judge, Panipat, Haryana",
+    status: "Active" as const,
+    action_date: "2026-03-01",
+    summary_en: "Under the leadership of Chairman Advocate Momin Malik, the Muslim Legal Aid Trust (India) initiated formal judicial proceedings challenging objectionable and malicious remarks targeting Prophet Muhammad, Hazrat Aisha, and the Muslim community.",
+  };
+
+  const otherCases = cases && cases.length > 1 ? cases.slice(1, 4) : [];
+
   return (
     <section
       id="legal-actions"
@@ -33,7 +55,7 @@ export default function RecentLegalActionsSection() {
         <div className="bg-gradient-to-r from-[#0D233A] via-[#122E4D] to-[#0D233A] text-white p-6 sm:p-8">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#0066FF]/25 border border-[#0066FF]/40 text-[#60A5FA] text-[12px] font-bold tracking-wider uppercase">
-              <span>Court of CJM / Civil Judge, Panipat, Haryana</span>
+              <span>{topCase.court_en}</span>
             </div>
             <span className="text-[12.5px] font-semibold text-slate-300">
               Judicial Notice Issued
@@ -41,14 +63,11 @@ export default function RecentLegalActionsSection() {
           </div>
 
           <h3 className="text-xl sm:text-2xl lg:text-[26px] font-extrabold leading-snug tracking-tight">
-            Panipat Court Issues Notice to Nazia Elahi Khan on Petition Filed by
-            Advocate Momin Malik
+            {topCase.title_en}
           </h3>
 
           <p className="mt-2.5 text-slate-300 text-[14px] sm:text-[14.5px] leading-relaxed max-w-4xl">
-            Under the leadership of Chairman Advocate Momin Malik, the Muslim Legal Aid
-            Trust (India) initiated formal judicial proceedings challenging objectionable
-            and malicious remarks targeting Prophet Muhammad, Hazrat Aisha, and the Muslim community.
+            {topCase.summary_en}
           </p>
         </div>
 
@@ -166,6 +185,35 @@ export default function RecentLegalActionsSection() {
           </div>
         </div>
 
+        {/* Other cases list if any */}
+        {otherCases.length > 0 && (
+          <div className="p-6 sm:p-8 border-b border-slate-100 bg-[#F8FAFC]">
+            <h4 className="text-[14px] font-bold uppercase tracking-wider text-slate-500 mb-4">
+              More Recent Proceedings
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {otherCases.map((c) => (
+                <div key={c.id} className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#0066FF] px-2 py-0.5 rounded bg-blue-50 border border-blue-100 inline-block mb-2">
+                      {c.court_en}
+                    </span>
+                    <h5 className="text-[14px] font-bold text-[#0D233A] line-clamp-2">
+                      {c.title_en}
+                    </h5>
+                    <p className="text-[12.5px] text-slate-500 mt-1.5 line-clamp-2">
+                      {c.summary_en}
+                    </p>
+                  </div>
+                  <p className="text-[11.5px] text-slate-400 mt-3 pt-2 border-t border-slate-100">
+                    {c.action_date} • {c.status}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Bottom Banner: Chairman's Commitment & Verification */}
         <div className="bg-slate-50/80 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -177,7 +225,7 @@ export default function RecentLegalActionsSection() {
                 Advocate Momin Malik • Chairman, Muslim Legal Aid Trust
               </p>
               <p className="text-[12px] text-[#52657A]">
-                Chamber No. 177, District & Sessions Courts, Panipat, Haryana
+                Chamber No. 177, District &amp; Sessions Courts, Panipat, Haryana
               </p>
             </div>
           </div>
@@ -187,7 +235,7 @@ export default function RecentLegalActionsSection() {
               href="/our-aims"
               className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#0066FF] hover:text-[#0052CC] transition-colors"
             >
-              <span>Explore All Objectives & Legal Work</span>
+              <span>Explore All Objectives &amp; Legal Work</span>
               <svg
                 className="w-4 h-4"
                 fill="none"

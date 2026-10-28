@@ -1,16 +1,22 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import AdminIcon from "../_components/icons";
 import { Badge, Button, EmptyState, Input, Modal, Select } from "../_components/ui";
 import { useAdminToast } from "../_components/Toast";
-import {
-  deleteLead,
-  Lead,
-  LeadStatus,
-  updateLeadStatus,
-  useLeads,
-} from "../../lib/leads";
+
+export type LeadStatus = "New" | "In Progress" | "Resolved";
+
+export interface Lead {
+  id: string | number;
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  created_at?: string;
+  date?: string;
+  status: LeadStatus;
+}
 
 const statusOptions: LeadStatus[] = ["New", "In Progress", "Resolved"];
 
@@ -20,7 +26,8 @@ function statusColor(status: LeadStatus): "blue" | "amber" | "green" {
   return "green";
 }
 
-function formatDate(iso: string): string {
+function formatDate(iso?: string): string {
+  if (!iso) return "—";
   const d = new Date(iso);
   return d.toLocaleDateString("en-IN", {
     day: "2-digit",
@@ -31,10 +38,29 @@ function formatDate(iso: string): string {
 
 export default function AdminLeadsPage() {
   const { showToast } = useAdminToast();
-  const leads = useLeads();
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [viewing, setViewing] = useState<Lead | null>(null);
+
+  const fetchLeads = async () => {
+    try {
+      const res = await fetch("/api/admin/data/leads");
+      if (res.ok) {
+        const data = await res.json();
+        setLeads(data);
+      }
+    } catch {
+      showToast("Failed to fetch leads", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLeads();
+  }, []);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
@@ -56,18 +82,39 @@ export default function AdminLeadsPage() {
     Resolved: leads.filter((l) => l.status === "Resolved").length,
   };
 
-  const handleStatusChange = (id: string, status: LeadStatus) => {
-    updateLeadStatus(id, status);
-    showToast(`Lead marked as "${status}".`);
+  const handleStatusChange = async (id: string | number, status: LeadStatus) => {
+    try {
+      const res = await fetch(`/api/admin/data/leads/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) throw new Error();
+      setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
+      if (viewing && viewing.id === id) {
+        setViewing((prev) => (prev ? { ...prev, status } : null));
+      }
+      showToast(`Lead marked as "${status}".`);
+    } catch {
+      showToast("Failed to update status", "error");
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string | number) => {
     if (!window.confirm("Delete this lead permanently? This cannot be undone.")) {
       return;
     }
-    deleteLead(id);
-    setViewing(null);
-    showToast("Lead deleted.", "info");
+    try {
+      const res = await fetch(`/api/admin/data/leads/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error();
+      setLeads((prev) => prev.filter((l) => l.id !== id));
+      setViewing(null);
+      showToast("Lead deleted.", "info");
+    } catch {
+      showToast("Failed to delete lead", "error");
+    }
   };
 
   return (
@@ -117,13 +164,15 @@ export default function AdminLeadsPage() {
           ))}
         </Select>
         <p className="text-[12.5px] text-slate-400 sm:ml-auto whitespace-nowrap">
-          Showing {filtered.length} of {leads.length}
+          {loading ? "Loading..." : `Showing ${filtered.length} of ${leads.length}`}
         </p>
       </div>
 
       {/* Leads Table */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-[0_4px_20px_rgba(13,35,58,0.04)] overflow-hidden">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="p-8 text-center text-slate-500 text-[14px]">Loading leads...</div>
+        ) : filtered.length === 0 ? (
           <EmptyState
             icon="inbox"
             title="No leads found"
@@ -168,7 +217,7 @@ export default function AdminLeadsPage() {
                     </td>
                     <td className="px-5 py-4 hidden sm:table-cell whitespace-nowrap">
                       <p className="text-[13px] text-slate-500">
-                        {formatDate(lead.date)}
+                        {formatDate(lead.created_at || lead.date)}
                       </p>
                     </td>
                     <td className="px-5 py-4">
@@ -195,14 +244,14 @@ export default function AdminLeadsPage() {
                     <td className="px-5 py-4 text-right whitespace-nowrap">
                       <button
                         onClick={() => setViewing(lead)}
-                        className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-[#0066FF] inline-flex items-center justify-center transition-colors"
+                        className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-[#0066FF] inline-flex items-center justify-center transition-colors cursor-pointer"
                         aria-label="View lead"
                       >
                         <AdminIcon name="eye" className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(lead.id)}
-                        className="w-8 h-8 rounded-lg hover:bg-red-50 text-slate-500 hover:text-red-600 inline-flex items-center justify-center transition-colors"
+                        className="w-8 h-8 rounded-lg hover:bg-red-50 text-slate-500 hover:text-red-600 inline-flex items-center justify-center transition-colors cursor-pointer"
                         aria-label="Delete lead"
                       >
                         <AdminIcon name="trash" className="w-4 h-4" />
@@ -260,7 +309,7 @@ export default function AdminLeadsPage() {
                   Submitted On
                 </p>
                 <p className="text-[13.5px] font-semibold text-[#0D233A] mt-1">
-                  {formatDate(viewing.date)}
+                  {formatDate(viewing.created_at || viewing.date)}
                 </p>
               </div>
               <div>

@@ -1,15 +1,15 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { adminLogin } from "../../lib/adminAuth";
+
 
 const COPYRIGHT_YEAR = 2026;
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@mlatrust.org");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,11 +23,25 @@ export default function AdminLoginPage() {
     }
     setError("");
     setLoading(true);
-    // Demo-only authentication — accepts any credentials.
-    setTimeout(() => {
-      adminLogin(email.trim());
-      router.push("/admin");
-    }, 650);
+    fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.trim(), password }),
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          setError(data.error || "Login failed.");
+          setLoading(false);
+          return;
+        }
+        router.push("/admin");
+        router.refresh();
+      })
+      .catch(() => {
+        setError("Network error. Please try again.");
+        setLoading(false);
+      });
   };
 
   return (
@@ -68,7 +82,7 @@ export default function AdminLoginPage() {
           </h1>
           <p className="mt-4 text-slate-300 text-[15px] leading-relaxed">
             Update homepage content, manage registered aims, office bearers,
-            gallery, donations and incoming legal aid requests — all from one
+            gallery, donations and incoming legal aid requests â€” all from one
             dashboard.
           </p>
         </div>
@@ -106,17 +120,6 @@ export default function AdminLoginPage() {
             <p className="mt-1.5 text-[13.5px] text-slate-500">
               Sign in to access the administration dashboard.
             </p>
-
-            <div className="mt-5 rounded-xl bg-blue-50/80 border border-blue-100 px-4 py-3">
-              <p className="text-[12px] font-bold text-[#0066FF] uppercase tracking-wide mb-1">
-                Demo Mode
-              </p>
-              <p className="text-[12.5px] text-[#2B4A72] leading-relaxed">
-                This is a UI preview. Enter any email &amp; password to continue
-                — no real authentication is performed yet.
-              </p>
-            </div>
-
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
               <div>
                 <label className="text-[12.5px] font-semibold text-slate-600 block mb-1.5">
@@ -140,7 +143,7 @@ export default function AdminLoginPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@mlatrust.org"
+                    placeholder="admin@mlat.com"
                     className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-[14px] text-[#0D233A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:bg-white transition-all"
                   />
                 </div>
@@ -168,7 +171,7 @@ export default function AdminLoginPage() {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter any password"
+                    placeholder="Enter your password"
                     className="w-full pl-11 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-[14px] text-[#0D233A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:bg-white transition-all"
                   />
                   <button

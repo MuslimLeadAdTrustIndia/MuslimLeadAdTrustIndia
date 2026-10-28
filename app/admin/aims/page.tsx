@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import AdminIcon from "../_components/icons";
 import {
   Badge,
@@ -20,10 +20,13 @@ interface Aim {
   id: number;
   clause: string;
   category: Category;
-  title: string;
-  summary: string;
-  originalText: string;
-  highlight: boolean;
+  title_en: string;
+  title_hi?: string;
+  summary_en: string;
+  summary_hi?: string;
+  original_text: string;
+  is_published: boolean;
+  sort_order: number;
 }
 
 const categoryLabels: Record<Category, string> = {
@@ -35,99 +38,55 @@ const categoryLabels: Record<Category, string> = {
   cells: "Trust Cell",
 };
 
-const seedAims: Aim[] = [
-  {
-    id: 2,
-    clause: "Clause 2",
-    category: "legal",
-    title: "Relief for Under-trials & Sentenced Prisoners",
-    summary:
-      "Working for victim Muslims and other inmates confined in Indian and foreign jails.",
-    originalText:
-      "To work for victim Muslims and others also, who is confined in various jail of India on under trials and awarded sentenced holder.",
-    highlight: true,
-  },
-  {
-    id: 4,
-    clause: "Clause 4",
-    category: "legal",
-    title: "Jail Inspections & Free Legal Assistance",
-    summary:
-      "Routine legal inspection of correctional homes and extending free legal counsel to the needy.",
-    originalText:
-      "To inspect the Jails and provide them free legal helps to the orphans, poor, handicapped, widows, senior citizen and requestors.",
-    highlight: true,
-  },
-  {
-    id: 9,
-    clause: "Clause 9",
-    category: "rights",
-    title: "Anti-Trafficking & Child Protection",
-    summary:
-      "Eradicating human trafficking, child exploitation, and forced begging mafias.",
-    originalText:
-      "Human Anti-trafficking and children trafficking, Beggar Trafficking works.",
-    highlight: false,
-  },
-  {
-    id: 18,
-    clause: "Clause 18",
-    category: "education",
-    title: "Scholarship & Aid to Poor Law Students",
-    summary:
-      "Financial aid, book grants, and courtroom internship mentorship for underprivileged students.",
-    originalText: "To help the poor law students.",
-    highlight: true,
-  },
-  {
-    id: 24,
-    clause: "Clause 24",
-    category: "health",
-    title: "Free Charitable Dispensaries & Medicines",
-    summary:
-      "Establishing public dispensaries and making free or subsidized medicines accessible to the poor.",
-    originalText:
-      "To work towards opening dispensaries and to strive for making free medicines available to poor and needy persons.",
-    highlight: true,
-  },
-  {
-    id: 45,
-    clause: "Clause 45",
-    category: "cells",
-    title: "Establishment of Specialized Operational Cells",
-    summary:
-      "Constitution of dedicated wings: Anti-Mob Lynching Cell, Legal Cell, Cyber Crime Cell, Medical Cell and more.",
-    originalText:
-      "The trust will constitute the legal cell, Legal Clerk Cell, Legal Penals, Medical Cell, Anti beggar Cell...",
-    highlight: true,
-  },
-];
-
 const emptyForm: Omit<Aim, "id"> = {
   clause: "",
   category: "legal",
-  title: "",
-  summary: "",
-  originalText: "",
-  highlight: false,
+  title_en: "",
+  title_hi: "",
+  summary_en: "",
+  summary_hi: "",
+  original_text: "",
+  is_published: true,
+  sort_order: 0,
 };
 
 export default function AdminAimsPage() {
   const { showToast } = useAdminToast();
-  const [aims, setAims] = useState<Aim[]>(seedAims);
+  const [aims, setAims] = useState<Aim[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<Omit<Aim, "id">>(emptyForm);
+  const [saving, setSaving] = useState(false);
+
+  const fetchAims = async () => {
+    try {
+      const res = await fetch("/api/admin/data/aims");
+      if (res.ok) {
+        const data = await res.json();
+        setAims(data);
+      }
+    } catch {
+      showToast("Failed to fetch aims", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAims();
+  }, []);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
     return aims.filter((a) => {
       const matchesSearch =
         q === "" ||
-        a.title.toLowerCase().includes(q) ||
-        a.clause.toLowerCase().includes(q);
+        (a.title_en && a.title_en.toLowerCase().includes(q)) ||
+        (a.title_hi && a.title_hi.toLowerCase().includes(q)) ||
+        (a.clause && a.clause.toLowerCase().includes(q));
       const matchesCategory =
         categoryFilter === "all" || a.category === categoryFilter;
       return matchesSearch && matchesCategory;
@@ -143,39 +102,67 @@ export default function AdminAimsPage() {
   const openEditModal = (aim: Aim) => {
     setEditingId(aim.id);
     setForm({
-      clause: aim.clause,
-      category: aim.category,
-      title: aim.title,
-      summary: aim.summary,
-      originalText: aim.originalText,
-      highlight: aim.highlight,
+      clause: aim.clause || "",
+      category: aim.category || "legal",
+      title_en: aim.title_en || "",
+      title_hi: aim.title_hi || "",
+      summary_en: aim.summary_en || "",
+      summary_hi: aim.summary_hi || "",
+      original_text: aim.original_text || "",
+      is_published: aim.is_published ?? true,
+      sort_order: aim.sort_order ?? 0,
     });
     setModalOpen(true);
   };
 
-  const handleSave = () => {
-    if (!form.title.trim() || !form.clause.trim()) {
-      showToast("Clause and title are required.", "error");
+  const handleSave = async () => {
+    if (!form.title_en.trim() || !form.clause.trim()) {
+      showToast("Clause and English Title are required.", "error");
       return;
     }
-    if (editingId !== null) {
-      setAims((prev) =>
-        prev.map((a) => (a.id === editingId ? { ...a, ...form } : a))
-      );
-      showToast("Aim updated successfully.");
-    } else {
-      setAims((prev) => [...prev, { ...form, id: Date.now() }]);
-      showToast("New aim added successfully.");
+    setSaving(true);
+    try {
+      if (editingId !== null) {
+        const res = await fetch(`/api/admin/data/aims/${editingId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        });
+        if (!res.ok) throw new Error();
+        const updated = await res.json();
+        setAims((prev) => prev.map((a) => (a.id === editingId ? updated : a)));
+        showToast("Aim updated successfully.");
+      } else {
+        const res = await fetch("/api/admin/data/aims", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        });
+        if (!res.ok) throw new Error();
+        const created = await res.json();
+        setAims((prev) => [...prev, created]);
+        showToast("New aim added successfully.");
+      }
+      setModalOpen(false);
+    } catch {
+      showToast("Failed to save aim", "error");
+    } finally {
+      setSaving(false);
     }
-    setModalOpen(false);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (!window.confirm("Delete this registered aim? This cannot be undone.")) {
       return;
     }
-    setAims((prev) => prev.filter((a) => a.id !== id));
-    showToast("Aim deleted.", "info");
+    try {
+      const res = await fetch(`/api/admin/data/aims/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error();
+      setAims((prev) => prev.filter((a) => a.id !== id));
+      showToast("Aim deleted.", "info");
+    } catch {
+      showToast("Failed to delete aim", "error");
+    }
   };
 
   return (
@@ -206,7 +193,7 @@ export default function AdminAimsPage() {
           ))}
         </Select>
         <p className="text-[12.5px] text-slate-400 sm:ml-auto whitespace-nowrap hidden sm:block">
-          {filtered.length} of {aims.length} aims
+          {loading ? "Loading..." : `${filtered.length} of ${aims.length} aims`}
         </p>
         <Button onClick={openAddModal} className="w-full sm:w-auto sm:ml-0">
           <AdminIcon name="plus" className="w-4 h-4" />
@@ -215,7 +202,9 @@ export default function AdminAimsPage() {
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-[0_4px_20px_rgba(13,35,58,0.04)] overflow-hidden">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="p-8 text-center text-slate-500 text-[14px]">Loading aims from database...</div>
+        ) : filtered.length === 0 ? (
           <EmptyState
             icon="scale"
             title="No aims found"
@@ -242,7 +231,7 @@ export default function AdminAimsPage() {
                     Category
                   </th>
                   <th className="px-5 py-3 text-[11.5px] font-bold uppercase tracking-wide text-slate-500 hidden sm:table-cell">
-                    Highlighted
+                    Published
                   </th>
                   <th className="px-5 py-3 text-[11.5px] font-bold uppercase tracking-wide text-slate-500 text-right">
                     Actions
@@ -259,17 +248,22 @@ export default function AdminAimsPage() {
                     </td>
                     <td className="px-5 py-4 max-w-[320px]">
                       <p className="text-[13.5px] font-bold text-[#0D233A]">
-                        {aim.title}
+                        {aim.title_en}
                       </p>
-                      <p className="text-[12px] text-slate-500 line-clamp-1">
-                        {aim.summary}
+                      {aim.title_hi && (
+                        <p className="text-[12px] font-medium text-slate-500">
+                          {aim.title_hi}
+                        </p>
+                      )}
+                      <p className="text-[12px] text-slate-500 line-clamp-1 mt-0.5">
+                        {aim.summary_en}
                       </p>
                     </td>
                     <td className="px-5 py-4 hidden md:table-cell">
                       <Badge color="blue">{categoryLabels[aim.category]}</Badge>
                     </td>
                     <td className="px-5 py-4 hidden sm:table-cell">
-                      {aim.highlight ? (
+                      {aim.is_published ? (
                         <Badge color="green">Yes</Badge>
                       ) : (
                         <Badge color="slate">No</Badge>
@@ -278,14 +272,14 @@ export default function AdminAimsPage() {
                     <td className="px-5 py-4 text-right whitespace-nowrap">
                       <button
                         onClick={() => openEditModal(aim)}
-                        className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-[#0066FF] inline-flex items-center justify-center transition-colors"
+                        className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-[#0066FF] inline-flex items-center justify-center transition-colors cursor-pointer"
                         aria-label="Edit aim"
                       >
                         <AdminIcon name="pencil" className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(aim.id)}
-                        className="w-8 h-8 rounded-lg hover:bg-red-50 text-slate-500 hover:text-red-600 inline-flex items-center justify-center transition-colors"
+                        className="w-8 h-8 rounded-lg hover:bg-red-50 text-slate-500 hover:text-red-600 inline-flex items-center justify-center transition-colors cursor-pointer"
                         aria-label="Delete aim"
                       >
                         <AdminIcon name="trash" className="w-4 h-4" />
@@ -310,8 +304,8 @@ export default function AdminAimsPage() {
             <Button variant="secondary" onClick={() => setModalOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave}>
-              {editingId !== null ? "Save Changes" : "Add Aim"}
+            <Button onClick={handleSave} disabled={saving}>
+              {saving ? "Saving..." : editingId !== null ? "Save Changes" : "Add Aim"}
             </Button>
           </>
         }
@@ -338,36 +332,51 @@ export default function AdminAimsPage() {
               ))}
             </Select>
           </Field>
-          <Field label="Title" className="sm:col-span-2">
+          <Field label="English Title" className="sm:col-span-2">
             <Input
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              value={form.title_en}
+              onChange={(e) => setForm({ ...form, title_en: e.target.value })}
               placeholder="Title shown on the public aims card"
             />
           </Field>
-          <Field label="Summary" className="sm:col-span-2">
+          <Field label="Hindi Title (वैकल्पिक)" className="sm:col-span-2">
+            <Input
+              value={form.title_hi || ""}
+              onChange={(e) => setForm({ ...form, title_hi: e.target.value })}
+              placeholder="उद्देश्य का हिंदी शीर्षक"
+            />
+          </Field>
+          <Field label="English Summary" className="sm:col-span-2">
             <Textarea
               rows={2}
-              value={form.summary}
-              onChange={(e) => setForm({ ...form, summary: e.target.value })}
+              value={form.summary_en}
+              onChange={(e) => setForm({ ...form, summary_en: e.target.value })}
               placeholder="Plain-language explanation of how the Trust executes this aim"
+            />
+          </Field>
+          <Field label="Hindi Summary (वैकल्पिक)" className="sm:col-span-2">
+            <Textarea
+              rows={2}
+              value={form.summary_hi || ""}
+              onChange={(e) => setForm({ ...form, summary_hi: e.target.value })}
+              placeholder="हिंदी में संक्षिप्त विवरण"
             />
           </Field>
           <Field label="Original Legal Text (Trust Deed Wording)" className="sm:col-span-2">
             <Textarea
               rows={3}
-              value={form.originalText}
-              onChange={(e) => setForm({ ...form, originalText: e.target.value })}
+              value={form.original_text}
+              onChange={(e) => setForm({ ...form, original_text: e.target.value })}
             />
           </Field>
           <label className="sm:col-span-2 flex items-center gap-2.5 text-[13.5px] font-medium text-slate-600 cursor-pointer">
             <input
               type="checkbox"
-              checked={form.highlight}
-              onChange={(e) => setForm({ ...form, highlight: e.target.checked })}
+              checked={form.is_published}
+              onChange={(e) => setForm({ ...form, is_published: e.target.checked })}
               className="w-4 h-4 rounded border-slate-300 text-[#0066FF] focus:ring-[#0066FF]"
             />
-            Mark as a highlighted aim on the public page
+            Publish on the public website
           </label>
         </div>
       </Modal>

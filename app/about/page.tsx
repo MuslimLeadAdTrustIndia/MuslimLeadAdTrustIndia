@@ -82,7 +82,7 @@ export default function AboutPage() {
         />
 
         {/* Story + Image */}
-        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 -mt-7">
+        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-12">
           <div className="bg-white rounded-3xl shadow-[0_10px_35px_rgba(13,35,58,0.08)] border border-slate-200/80 p-6 sm:p-10 lg:p-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               <div className="lg:col-span-6">
@@ -271,16 +271,16 @@ export default function AboutPage() {
                 Trust&apos;s mission forward.
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+            <div className="flex flex-row items-center gap-2.5 sm:gap-3 w-full sm:w-auto shrink-0">
               <Link
                 href="/office-bearers"
-                className="flex-1 sm:flex-none text-center bg-white text-[#0D233A] hover:bg-slate-100 px-6 py-3 rounded-full text-sm font-bold transition-all shadow-md"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center text-center bg-white text-[#0D233A] hover:bg-slate-100 px-4 sm:px-6 py-3 rounded-full text-[13px] sm:text-sm font-bold transition-all shadow-md min-h-[46px]"
               >
                 Meet Office Bearers
               </Link>
               <Link
                 href="/contact"
-                className="flex-1 sm:flex-none text-center bg-[#00A3FF] hover:bg-[#008FE0] text-white px-6 py-3 rounded-full text-sm font-bold transition-all shadow-md"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center text-center border-2 border-white/80 hover:border-white text-white hover:bg-white/10 px-4 sm:px-6 py-3 rounded-full text-[13px] sm:text-sm font-bold transition-all shadow-sm min-h-[46px]"
               >
                 Contact Us
               </Link>

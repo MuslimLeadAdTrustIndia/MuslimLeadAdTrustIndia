@@ -1,0 +1,8 @@
+import { NextResponse } from "next/server";
+import { getSession } from "../../../lib/server/session";
+
+export async function GET() {
+  const s = await getSession();
+  if (!s) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  return NextResponse.json({ email: s.email, name: "Admin User" });
+}

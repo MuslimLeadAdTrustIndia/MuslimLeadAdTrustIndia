@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -665,46 +665,74 @@ const coreValues = [
 ];
 
 export default function OurAimsPage() {
+  const [allAims, setAllAims] = useState<AimItem[]>(aimsList);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedAim, setSelectedAim] = useState<AimItem | null>(null);
 
+  useEffect(() => {
+    const loadAims = () => {
+      fetch("/api/aims", { cache: "no-store" })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (Array.isArray(data) && data.length > 0) {
+            const mapped: AimItem[] = data.map((d: any) => ({
+              id: d.id,
+              clause: d.clause,
+              category: d.category,
+              title: d.title_en,
+              summary: d.summary_en,
+              originalText: d.original_text || d.summary_en,
+              iconType: "scale",
+              highlight: d.is_published,
+            }));
+            setAllAims(mapped);
+          }
+        })
+        .catch(() => {});
+    };
+
+    loadAims();
+    window.addEventListener("focus", loadAims);
+    return () => window.removeEventListener("focus", loadAims);
+  }, []);
+
   const categories = [
-    { id: "all", label: "All Aims & Objects", count: aimsList.length },
+    { id: "all", label: "All Aims & Objects", count: allAims.length },
     {
       id: "legal",
       label: "Legal Aid & Prisoners",
-      count: aimsList.filter((a) => a.category === "legal").length,
+      count: allAims.filter((a) => a.category === "legal").length,
     },
     {
       id: "rights",
       label: "Human Rights & Protection",
-      count: aimsList.filter((a) => a.category === "rights").length,
+      count: allAims.filter((a) => a.category === "rights").length,
     },
     {
       id: "welfare",
       label: "Women & Senior Welfare",
-      count: aimsList.filter((a) => a.category === "welfare").length,
+      count: allAims.filter((a) => a.category === "welfare").length,
     },
     {
       id: "education",
       label: "Education & Youth",
-      count: aimsList.filter((a) => a.category === "education").length,
+      count: allAims.filter((a) => a.category === "education").length,
     },
     {
       id: "health",
       label: "Health & Relief",
-      count: aimsList.filter((a) => a.category === "health").length,
+      count: allAims.filter((a) => a.category === "health").length,
     },
     {
       id: "cells",
       label: "Specialized Cells",
-      count: aimsList.filter((a) => a.category === "cells").length,
+      count: allAims.filter((a) => a.category === "cells").length,
     },
   ];
 
   const filteredAims = useMemo(() => {
-    return aimsList.filter((item) => {
+    return allAims.filter((item) => {
       const matchesCategory =
         selectedCategory === "all" || item.category === selectedCategory;
       const q = searchQuery.toLowerCase().trim();
@@ -716,7 +744,7 @@ export default function OurAimsPage() {
         item.originalText.toLowerCase().includes(q);
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [allAims, selectedCategory, searchQuery]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F8FC]">
@@ -797,7 +825,7 @@ export default function OurAimsPage() {
         </div>
 
         {/* Search, Filter, and Stats Section */}
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 -mt-7">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-12">
           <div className="bg-white rounded-2xl shadow-[0_10px_35px_rgba(13,35,58,0.08)] border border-slate-200/80 p-4 sm:p-6">
             <div className="flex flex-col md:flex-row items-center gap-4 justify-between">
               {/* Live Search Input */}
@@ -851,7 +879,7 @@ export default function OurAimsPage() {
                 <span className="font-bold text-[#0D233A]">
                   {filteredAims.length}
                 </span>{" "}
-                of {aimsList.length} Registered Clauses
+                of {allAims.length} Registered Clauses
               </div>
             </div>
 
@@ -1103,16 +1131,16 @@ export default function OurAimsPage() {
                 poor victims, and marginalized individuals across India.
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+            <div className="flex flex-row items-center gap-2.5 sm:gap-3 w-full sm:w-auto shrink-0">
               <Link
                 href="/contact"
-                className="flex-1 sm:flex-none text-center bg-white text-[#0D233A] hover:bg-slate-100 px-6 py-3 rounded-full text-sm font-bold transition-all shadow-md"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center text-center bg-white text-[#0D233A] hover:bg-slate-100 px-4 sm:px-6 py-3 rounded-full text-[13px] sm:text-sm font-bold transition-all shadow-md min-h-[46px]"
               >
                 Apply for Legal Help
               </Link>
               <Link
                 href="/donate"
-                className="flex-1 sm:flex-none text-center bg-[#00A3FF] hover:bg-[#008FE0] text-white px-6 py-3 rounded-full text-sm font-bold transition-all shadow-md"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center text-center border-2 border-white/80 hover:border-white text-white hover:bg-white/10 px-4 sm:px-6 py-3 rounded-full text-[13px] sm:text-sm font-bold transition-all shadow-sm min-h-[46px]"
               >
                 Donate to the Cause
               </Link>

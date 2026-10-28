@@ -4,16 +4,33 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import PageHero from "../components/PageHero";
-import { addLead } from "../lib/leads";
-
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    addLead(form);
-    setSubmitted(true);
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Failed to submit. Please try again.");
+      } else {
+        setSubmitted(true);
+      }
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -29,7 +46,7 @@ export default function ContactPage() {
           description="Whether you need legal aid, want to volunteer, or wish to support our mission — reach out and our team will respond promptly."
         />
 
-        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 -mt-7">
+        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Contact Form */}
             <div className="lg:col-span-7 bg-white rounded-3xl shadow-[0_10px_35px_rgba(13,35,58,0.08)] border border-slate-200/80 p-6 sm:p-10">
@@ -121,11 +138,18 @@ export default function ContactPage() {
                     />
                   </div>
 
+                  {error && (
+                    <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl text-[13px] font-medium">
+                      {error}
+                    </div>
+                  )}
+
                   <button
                     type="submit"
-                    className="inline-flex items-center gap-2.5 bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14.5px] font-bold px-6 py-3.5 rounded-full shadow-[0_6px_18px_rgba(0,102,255,0.28)] transition-all"
+                    disabled={loading}
+                    className="inline-flex items-center gap-2.5 bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14.5px] font-bold px-6 py-3.5 rounded-full shadow-[0_6px_18px_rgba(0,102,255,0.28)] transition-all disabled:opacity-60 cursor-pointer"
                   >
-                    <span>Send Message</span>
+                    <span>{loading ? "Sending..." : "Send Message"}</span>
                     <svg
                       className="w-4 h-4"
                       fill="none"
