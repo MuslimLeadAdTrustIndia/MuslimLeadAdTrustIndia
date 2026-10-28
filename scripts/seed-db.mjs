@@ -160,8 +160,8 @@ async function seed() {
       { url: "/images/new/p3.png", alt_en: "Supporting prisoners awaiting justice", category: "Prisoners Welfare", sort_order: 3 },
       { url: "/images/new/p4.png", alt_en: "Legal rights awareness seminar", category: "Education", sort_order: 4 },
       { url: "/images/new/p5.png", alt_en: "Legal documentation and family guidance", category: "Legal Aid", sort_order: 5 },
-      { url: "/images/legal-help-card.jpg", alt_en: "Legal help and representation", category: "Legal Aid", sort_order: 6 },
-      { url: "/images/family-support-card.jpg", alt_en: "Family support program", category: "Community", sort_order: 7 },
+      { url: "/images/legal-help-cropped.jpg", alt_en: "Legal help and representation", category: "Legal Aid", sort_order: 6 },
+      { url: "/images/family-support-cropped.jpg", alt_en: "Family support program", category: "Community", sort_order: 7 },
       { url: "/images/new/health and rehabilitation.png", alt_en: "Health and rehabilitation", category: "Health", sort_order: 8 },
     ];
     await sb.from("gallery_images").insert(gallery);

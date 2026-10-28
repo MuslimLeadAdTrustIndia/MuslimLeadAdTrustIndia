@@ -10,7 +10,7 @@ interface DonationData {
 
 export default function DonationSection({ donation }: { donation?: DonationData }) {
   return (
-    <section id="donation" className="w-full mt-14">
+    <section id="donation" className="w-full mt-6 sm:mt-10 lg:mt-14">
       <div className="relative w-full lg:min-h-[300px] flex flex-col lg:flex-row lg:items-center overflow-hidden bg-[#F2F7FD]">
         {/* Desktop Left-side Heart Hands Background Image */}
         <div

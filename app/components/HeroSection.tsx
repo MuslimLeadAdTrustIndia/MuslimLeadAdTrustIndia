@@ -129,7 +129,7 @@ export default function HeroSection({ hero, stats }: { hero?: HeroData; stats?: 
           <img
             src="/images/new/banner.png"
             alt="Muslim Legal Aid Trust - Legal Support for Muslim Prisoners"
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-right scale-[1.3] origin-right"
           />
         </div>
       </div>
