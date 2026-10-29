@@ -12,9 +12,9 @@ export default function AdminSettingsPage() {
   const [general, setGeneral] = useState({
     orgName: "Muslim Legal Aid Trust (India)",
     tagline: "Justice • Support • Rehabilitation",
-    email: "info@mlatrust.org",
-    phone: "+91 98765 43210",
-    address: "123, Peace Avenue, New Delhi - 110001, India",
+    email: "muslimlegalaidtrustindia80@gmail.com",
+    phone: "+91 80593 11777",
+    address: "Chamber No. 177, 1st Floor, Lawyers Chambers, Distt. Court, Panipat - 132103, Haryana, India",
     officeHours: "Mon - Sat: 10:00 AM - 6:00 PM, Sunday: Closed",
   });
 

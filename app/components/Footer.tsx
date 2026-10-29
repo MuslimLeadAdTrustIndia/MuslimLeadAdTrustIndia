@@ -101,10 +101,10 @@ export default function Footer() {
                   />
                 </svg>
                 <a
-                  href="mailto:info@mlatrust.org"
-                  className="hover:text-[#0066FF] transition-colors"
+                  href="mailto:muslimlegalaidtrustindia80@gmail.com"
+                  className="hover:text-[#0066FF] transition-colors break-all"
                 >
-                  info@mlatrust.org
+                  muslimlegalaidtrustindia80@gmail.com
                 </a>
               </li>
 
@@ -123,10 +123,10 @@ export default function Footer() {
                   />
                 </svg>
                 <a
-                  href="tel:+919876543210"
+                  href="tel:+918059311777"
                   className="hover:text-[#0066FF] transition-colors"
                 >
-                  +91 98765 43210
+                  +91 80593 11777
                 </a>
               </li>
 
@@ -151,8 +151,8 @@ export default function Footer() {
                   />
                 </svg>
                 <span>
-                  123, Peace Avenue, <br />
-                  New Delhi - 110001, India
+                  Chamber No. 177, 1st Floor, Lawyers Chambers, <br />
+                  Distt. Court, Panipat - 132103, Haryana, India
                 </span>
               </li>
             </ul>

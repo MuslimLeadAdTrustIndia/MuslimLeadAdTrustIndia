@@ -200,8 +200,8 @@ export default function ContactPage() {
                       />
                     </svg>
                     <span className="text-slate-200">
-                      123, Peace Avenue, <br />
-                      New Delhi - 110001, India
+                      Chamber No. 177, 1st Floor, Lawyers Chambers, <br />
+                      Distt. Court, Panipat - 132103, Haryana, India
                     </span>
                   </li>
 
@@ -220,10 +220,10 @@ export default function ContactPage() {
                       />
                     </svg>
                     <a
-                      href="tel:+919876543210"
+                      href="tel:+918059311777"
                       className="text-slate-200 hover:text-white transition-colors"
                     >
-                      +91 98765 43210
+                      +91 80593 11777
                     </a>
                   </li>
 
@@ -242,10 +242,10 @@ export default function ContactPage() {
                       />
                     </svg>
                     <a
-                      href="mailto:info@mlatrust.org"
-                      className="text-slate-200 hover:text-white transition-colors"
+                      href="mailto:muslimlegalaidtrustindia80@gmail.com"
+                      className="text-slate-200 hover:text-white transition-colors break-all"
                     >
-                      info@mlatrust.org
+                      muslimlegalaidtrustindia80@gmail.com
                     </a>
                   </li>
 
@@ -269,6 +269,57 @@ export default function ContactPage() {
                     </span>
                   </li>
                 </ul>
+
+                <p className="mt-8 mb-3 text-[12px] font-bold uppercase tracking-[0.16em] text-[#60A5FA]">
+                  Office Bearers
+                </p>
+                <div className="space-y-3">
+                  {[
+                    {
+                      role: "Chairman",
+                      name: "Momin Malik Advocate",
+                      phone: "+91 83177 00001",
+                      tel: "+918317700001",
+                      email: "chairmanmuslimlegalaidtrustind@gmail.com",
+                    },
+                    {
+                      role: "Secretary",
+                      name: "",
+                      email: "secmuslimlegalaidtrustind@gmail.com",
+                    },
+                    {
+                      role: "Cashier",
+                      name: "",
+                      email: "cashiermuslimlegalaidtrustindi@gmail.com",
+                    },
+                  ].map((p) => (
+                    <div
+                      key={p.role}
+                      className="rounded-2xl bg-white/5 border border-white/10 px-4 py-3"
+                    >
+                      <p className="text-[13px] font-bold text-white">
+                        {p.role}
+                        {p.name && (
+                          <span className="font-medium text-slate-300"> — {p.name}</span>
+                        )}
+                      </p>
+                      {p.phone && (
+                        <a
+                          href={`tel:${p.tel}`}
+                          className="block text-[13px] text-slate-200 hover:text-white transition-colors"
+                        >
+                          {p.phone}
+                        </a>
+                      )}
+                      <a
+                        href={`mailto:${p.email}`}
+                        className="block text-[13px] text-slate-200 hover:text-white transition-colors break-all"
+                      >
+                        {p.email}
+                      </a>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="mt-8 pt-6 border-t border-white/10">
