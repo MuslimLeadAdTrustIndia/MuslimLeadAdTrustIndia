@@ -877,7 +877,7 @@ export default function DonatePage() {
               </div>
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
                 <span className="text-[11.5px] font-bold text-slate-400 uppercase tracking-wider block">UPI VPA</span>
-                <span className="text-[14px] font-mono font-bold text-[#0066FF] mt-1 block break-all">musl9354437@barodampay</span>
+                <span className="text-[14px] font-mono font-bold text-[#0066FF] mt-1 block break-all">{UPI_ID}</span>
               </div>
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
                 <span className="text-[11.5px] font-bold text-slate-400 uppercase tracking-wider block">Need Assistance?</span>
