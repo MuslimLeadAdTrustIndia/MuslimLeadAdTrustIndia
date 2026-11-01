@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-// Optimistic gate only. Every /api/admin write route re-verifies the JWT itself.
-export async function proxy(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isLogin = pathname === "/admin/login" || pathname === "/api/admin/login";
   const token = req.cookies.get("mlat_admin_token")?.value;

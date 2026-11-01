@@ -47,6 +47,13 @@ export async function POST(req: Request) {
     if (!(file instanceof File) || file.size === 0) {
       return NextResponse.json({ error: "Please upload your payment receipt or screenshot." }, { status: 400 });
     }
+    const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "application/pdf"];
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      return NextResponse.json(
+        { error: "Only image files (JPG, PNG, WEBP) or PDF documents are allowed for receipts." },
+        { status: 400 }
+      );
+    }
     if (file.size > 10 * 1024 * 1024) {
       return NextResponse.json(
         { error: "Receipt image/document size must be under 10 MB." },

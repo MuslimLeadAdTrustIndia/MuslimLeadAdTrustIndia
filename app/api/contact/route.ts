@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabasePublic } from "../../lib/server/supabase";
+import { supabaseAdmin } from "../../lib/server/supabase";
 
 export async function POST(req: Request) {
   try {
@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Name, email, and message are required." }, { status: 400 });
     }
 
-    const sb = supabasePublic();
+    const sb = supabaseAdmin();
     const { data, error } = await sb
       .from("leads")
       .insert({
@@ -20,10 +20,11 @@ export async function POST(req: Request) {
         message: String(message).trim(),
         status: "New",
       })
-      .select()
+      .select("id, name, email, phone, status, created_at")
       .single();
 
     if (error) {
+      console.error("Supabase leads insert error:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
@@ -33,3 +34,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
+

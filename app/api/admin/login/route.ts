@@ -1,8 +1,9 @@
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { createToken, setSessionCookie } from "../../../lib/server/session";
+import { supabaseAdmin } from "../../../lib/server/supabase";
 
-// Simple in-memory rate limit: 5 failed attempts / 15 min per IP.
+// Simple rate limit window: 15 attempts / 15 min per IP.
 const attempts = new Map<string, { count: number; reset: number }>();
 const WINDOW = 15 * 60 * 1000;
 const MAX_ATTEMPTS = 15;
@@ -22,16 +23,52 @@ export async function POST(req: Request) {
   const email = (body.email || "").trim().toLowerCase();
   const password = body.password || "";
 
-  const adminEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  const hash = process.env.ADMIN_PASSWORD_HASH || "";
+  if (!email || !password) {
+    return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
+  }
 
-  // Support both 'mlat@0302' and 'Mlat@0302'
-  const passwordMatch =
-    (await bcrypt.compare(password, hash)) ||
-    (await bcrypt.compare(password.toLowerCase(), hash));
+  let authenticated = false;
+  let authenticatedEmail = email;
 
-  const ok = !!adminEmail && !!hash && email === adminEmail && passwordMatch;
-  if (!ok) {
+  // 1. Primary check: Database (admin_users table via service role)
+  try {
+    const sb = supabaseAdmin();
+    const { data: dbUser, error } = await sb
+      .from("admin_users")
+      .select("email, password_hash")
+      .eq("email", email)
+      .maybeSingle();
+
+    if (!error && dbUser?.password_hash) {
+      const match =
+        (await bcrypt.compare(password, dbUser.password_hash)) ||
+        (await bcrypt.compare(password.toLowerCase(), dbUser.password_hash));
+      if (match) {
+        authenticated = true;
+        authenticatedEmail = dbUser.email;
+      }
+    }
+  } catch (err) {
+    console.error("DB admin auth check error:", err);
+  }
+
+  // 2. Fallback to .env (for backward compatibility until DB migration is completed)
+  if (!authenticated) {
+    const envEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+    const envHash = process.env.ADMIN_PASSWORD_HASH || "";
+
+    if (envEmail && envHash && email === envEmail) {
+      const envMatch =
+        (await bcrypt.compare(password, envHash)) ||
+        (await bcrypt.compare(password.toLowerCase(), envHash));
+      if (envMatch) {
+        authenticated = true;
+        authenticatedEmail = envEmail;
+      }
+    }
+  }
+
+  if (!authenticated) {
     const cur = rec && rec.reset > now ? rec : { count: 0, reset: now + WINDOW };
     cur.count += 1;
     attempts.set(ip, cur);
@@ -39,6 +76,6 @@ export async function POST(req: Request) {
   }
 
   attempts.delete(ip);
-  await setSessionCookie(await createToken(adminEmail));
-  return NextResponse.json({ ok: true, email: adminEmail });
+  await setSessionCookie(await createToken(authenticatedEmail));
+  return NextResponse.json({ ok: true, email: authenticatedEmail });
 }

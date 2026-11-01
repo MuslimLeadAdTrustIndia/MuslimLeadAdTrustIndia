@@ -8,7 +8,7 @@ export async function getSiteContent<T extends Record<string, unknown>>(key: str
     if (data?.value && Object.keys(data.value).length > 0) {
       return { ...fallback, ...data.value };
     }
-  } catch {}
+  } catch (err) { console.error("[Content fetch fallback]", err); }
   return fallback;
 }
 
@@ -17,7 +17,7 @@ export async function getHomeStats() {
     const sb = supabasePublic();
     const { data } = await sb.from("home_stats").select("*").order("sort_order", { ascending: true });
     if (data && data.length > 0) return data;
-  } catch {}
+  } catch (err) { console.error("[Content fetch fallback]", err); }
   return [
     { id: 1, value: "500+", label_en: "Families Supported", label_hi: "" },
     { id: 2, value: "120+", label_en: "Legal Cases Assisted", label_hi: "" },
@@ -35,7 +35,7 @@ export async function getAims() {
       .eq("is_published", true)
       .order("sort_order", { ascending: true });
     if (data && data.length > 0) return data;
-  } catch {}
+  } catch (err) { console.error("[Content fetch fallback]", err); }
   return [];
 }
 
@@ -44,7 +44,7 @@ export async function getOfficeBearers() {
     const sb = supabasePublic();
     const { data } = await sb.from("office_bearers").select("*").order("sort_order", { ascending: true });
     if (data && data.length > 0) return data;
-  } catch {}
+  } catch (err) { console.error("[Content fetch fallback]", err); }
   return [];
 }
 
@@ -53,7 +53,7 @@ export async function getLegalActions() {
     const sb = supabasePublic();
     const { data } = await sb.from("legal_actions").select("*").order("action_date", { ascending: false });
     if (data && data.length > 0) return data;
-  } catch {}
+  } catch (err) { console.error("[Content fetch fallback]", err); }
   return [];
 }
 
@@ -62,7 +62,7 @@ export async function getGalleryImages() {
     const sb = supabasePublic();
     const { data } = await sb.from("gallery_images").select("*").order("sort_order", { ascending: true });
     if (data && data.length > 0) return data;
-  } catch {}
+  } catch (err) { console.error("[Content fetch fallback]", err); }
   return [];
 }
 

@@ -11,6 +11,18 @@ begin new.updated_at = now(); return new; end $$;
 -- ============ Tables ============
 -- Single-block sections: home_hero, home_about, home_donation_banner,
 -- prisoners_banner, legal_help_intro, site_general, site_social, site_seo
+-- Admin users table for database-based authentication
+create table if not exists public.admin_users (
+  id bigint generated always as identity primary key,
+  email text not null unique,
+  password_hash text not null,
+  role text not null default 'admin',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+alter table public.admin_users enable row level security;
+-- (Zero public RLS policies: only service-role key can access)
+
 create table if not exists public.site_content (
   key text primary key,
   value jsonb not null default '{}'::jsonb,   -- bilingual keys inside, e.g. {"title_en":"..","title_hi":".."}
