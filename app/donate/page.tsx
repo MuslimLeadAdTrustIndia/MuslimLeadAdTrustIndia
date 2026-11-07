@@ -282,7 +282,7 @@ export default function DonatePage() {
                   )}
                 </div>
                 <span className="text-[12px] sm:text-[13px] font-semibold text-[#0D233A] mt-2 whitespace-nowrap">
-                  Scan & Pay
+                  {method === "bank" ? "Transfer & Pay" : "Scan & Pay"}
                 </span>
               </div>
 
