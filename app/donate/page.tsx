@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import PageHero from "../components/PageHero";
 import MembershipForm from "./MembershipForm";
-import { UPI_ID, MERCHANT_NAME } from "./upi";
+import { UPI_ID, MERCHANT_NAME, BANK_DETAILS } from "./upi";
 
 const amounts = [500, 1000, 2500, 5000];
 
@@ -36,8 +36,9 @@ export default function DonatePage() {
   const [tab, setTab] = useState<"donate" | "membership">("donate");
 
   // Form Fields
-  const [selected, setSelected] = useState<number>(1000);
-  const [custom, setCustom] = useState<string>("");
+  const [amountInput, setAmountInput] = useState<string>("1000");
+  const [method, setMethod] = useState<"upi" | "bank">("upi");
+  const [copiedField, setCopiedField] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -55,12 +56,20 @@ export default function DonatePage() {
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [successData, setSuccessData] = useState<{ utr: string; amount: number } | null>(null);
 
-  const activeAmount = custom ? Number(custom) : selected;
+  const activeAmount = Number(amountInput) >= 1 ? Number(amountInput) : 0;
+  const amountInputRef = useRef<HTMLInputElement>(null);
+  const isCustomAmount = !amounts.includes(Number(amountInput));
 
   const handleCopyUpi = () => {
     navigator.clipboard.writeText(UPI_ID);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleCopyField = (key: string, value: string) => {
+    navigator.clipboard.writeText(value);
+    setCopiedField(key);
+    setTimeout(() => setCopiedField((c) => (c === key ? "" : c)), 2000);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,8 +103,8 @@ export default function DonatePage() {
     e.preventDefault();
     setErrorMsg("");
 
-    if (!activeAmount || activeAmount <= 0) {
-      setErrorMsg("Please choose or enter a valid donation amount.");
+    if (!activeAmount || activeAmount < 1) {
+      setErrorMsg("Please choose or enter a valid donation amount (minimum ₹1).");
       return;
     }
     if (!name.trim()) {
@@ -119,7 +128,13 @@ export default function DonatePage() {
     e.preventDefault();
     setErrorMsg("");
 
-    if (!/^\d{12}$/.test(utr.replace(/\s+/g, ""))) {
+    const cleanUtr = utr.replace(/\s+/g, "");
+    if (method === "bank") {
+      if (!/^[A-Za-z0-9]{12,22}$/.test(cleanUtr)) {
+        setErrorMsg("Please enter the Bank Transaction / UTR reference (12 to 22 letters or digits).");
+        return;
+      }
+    } else if (!/^\d{12}$/.test(cleanUtr)) {
       setErrorMsg("Please enter the 12-digit UPI Reference / UTR Number (digits only).");
       return;
     }
@@ -137,6 +152,7 @@ export default function DonatePage() {
       formData.append("email", email.trim());
       formData.append("amount", activeAmount.toString());
       formData.append("utr", utr.trim());
+      formData.append("method", method);
       formData.append("notes", notes.trim());
       formData.append("receipt", file);
 
@@ -305,7 +321,7 @@ export default function DonatePage() {
                   Every Contribution Builds a Fairer Future
                 </h2>
                 <p className="text-[13.5px] text-slate-500 mt-2">
-                  Select your contribution amount and fill in your details to generate your verified UPI scanner.
+                  Select your contribution amount, choose how you want to pay, and fill in your details.
                 </p>
 
                 {errorMsg && (
@@ -323,17 +339,14 @@ export default function DonatePage() {
                     <label className="text-[12.5px] font-bold uppercase tracking-wider text-slate-600 block mb-2">
                       Select Amount (₹)
                     </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                       {amounts.map((amt) => (
                         <button
                           key={amt}
                           type="button"
-                          onClick={() => {
-                            setSelected(amt);
-                            setCustom("");
-                          }}
+                          onClick={() => setAmountInput(String(amt))}
                           className={`py-3.5 rounded-xl text-[15px] font-bold border transition-all ${
-                            !custom && selected === amt
+                            Number(amountInput) === amt
                               ? "bg-[#0066FF] text-white border-[#0066FF] shadow-md shadow-blue-500/25 scale-[1.02]"
                               : "bg-slate-50 text-[#0D233A] border-slate-200 hover:border-[#0066FF]/50"
                           }`}
@@ -341,24 +354,68 @@ export default function DonatePage() {
                           ₹{amt.toLocaleString("en-IN")}
                         </button>
                       ))}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAmountInput("");
+                          amountInputRef.current?.focus();
+                        }}
+                        className={`col-span-2 sm:col-span-1 py-3.5 rounded-xl text-[15px] font-bold border transition-all ${
+                          isCustomAmount
+                            ? "bg-[#0066FF] text-white border-[#0066FF] shadow-md shadow-blue-500/25 scale-[1.02]"
+                            : "bg-slate-50 text-[#0D233A] border-slate-200 hover:border-[#0066FF]/50"
+                        }`}
+                      >
+                        Custom
+                      </button>
                     </div>
                   </div>
 
-                  {/* Custom Amount */}
+                  {/* Amount box: shows the selected preset and accepts any custom amount */}
                   <div>
                     <label className="text-[12.5px] font-semibold text-slate-500 block mb-1.5">
-                      Or enter a custom amount (₹)
+                      Custom amount (₹) — any amount from ₹1
                     </label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-base">₹</span>
                       <input
+                        ref={amountInputRef}
                         type="number"
                         min={1}
-                        placeholder="e.g. 1500"
-                        value={custom}
-                        onChange={(e) => setCustom(e.target.value)}
+                        step={1}
+                        inputMode="numeric"
+                        placeholder="Enter any amount, e.g. 1"
+                        value={amountInput}
+                        onChange={(e) => setAmountInput(e.target.value)}
                         className="w-full pl-9 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-[15px] font-semibold text-[#0D233A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:bg-white transition-all"
                       />
+                    </div>
+                  </div>
+
+                  {/* Payment Method */}
+                  <div>
+                    <label className="text-[12.5px] font-bold uppercase tracking-wider text-slate-600 block mb-2">
+                      Payment Method
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {([
+                        ["upi", "UPI", "Scan QR / UPI app"],
+                        ["bank", "Bank Account", "NEFT / IMPS / RTGS"],
+                      ] as const).map(([key, label, sub]) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => setMethod(key)}
+                          className={`py-3 px-4 rounded-xl border text-left transition-all cursor-pointer ${
+                            method === key
+                              ? "bg-blue-50 border-[#0066FF] ring-2 ring-[#0066FF]/20"
+                              : "bg-slate-50 border-slate-200 hover:border-[#0066FF]/50"
+                          }`}
+                        >
+                          <span className="block text-[14.5px] font-bold text-[#0D233A]">{label}</span>
+                          <span className="block text-[11.5px] text-slate-500">{sub}</span>
+                        </button>
+                      ))}
                     </div>
                   </div>
 
@@ -533,7 +590,60 @@ export default function DonatePage() {
               )}
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                {/* Left: Bank details (bank method) */}
+                {method === "bank" && (
+                  <div className="lg:col-span-5 bg-white rounded-3xl shadow-[0_10px_35px_rgba(13,35,58,0.08)] border border-slate-200/80 p-6">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-50 border border-amber-200/70 rounded-full text-[12px] font-bold text-amber-800 mb-4">
+                      <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                      Bank Account Transfer
+                    </div>
+                    <h3 className="text-[17px] font-extrabold text-[#0D233A]">Bank Account Details</h3>
+                    <p className="text-[12.5px] text-slate-500 mt-1">
+                      Transfer ₹{activeAmount.toLocaleString("en-IN")} via NEFT / IMPS / RTGS to the account below.
+                    </p>
+
+                    <div className="mt-4 space-y-2.5">
+                      {([
+                        ["holder", "Account Holder Name", BANK_DETAILS.accountHolder, true],
+                        ["acc", "Account Number", BANK_DETAILS.accountNumber, true],
+                        ["ifsc", "IFSC Code", BANK_DETAILS.ifsc, true],
+                        ["bank", "Bank Name", BANK_DETAILS.bankName, false],
+                        ["type", "Account Type", BANK_DETAILS.accountType, false],
+                        ["branch", "Branch", BANK_DETAILS.branch, false],
+                        ["city", "City / State / PIN", `${BANK_DETAILS.city}, ${BANK_DETAILS.state} - ${BANK_DETAILS.pincode}`, false],
+                      ] as const).map(([key, label, value, copyable]) => (
+                        <div key={key} className="p-3 bg-slate-50 border border-slate-200/80 rounded-2xl">
+                          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{label}</p>
+                          <div className="flex items-center justify-between gap-2 mt-0.5">
+                            <span className={`text-[14px] font-bold text-[#0D233A] break-words min-w-0 ${copyable ? "font-mono" : ""}`}>
+                              {value}
+                            </span>
+                            {copyable && (
+                              <button
+                                type="button"
+                                onClick={() => handleCopyField(key, value)}
+                                className={`px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all cursor-pointer flex-shrink-0 ${
+                                  copiedField === key
+                                    ? "bg-emerald-600 text-white"
+                                    : "bg-[#0066FF] hover:bg-[#0052CC] text-white"
+                                }`}
+                              >
+                                {copiedField === key ? "Copied!" : "Copy"}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <p className="mt-4 text-[12px] leading-relaxed text-amber-800 bg-amber-50 border border-amber-200/70 rounded-xl p-3">
+                      Note: In the IFSC, the character after <strong>B</strong> is the digit zero (<strong>0</strong>), not the letter O. Please verify the beneficiary name and account details with your bank before transferring.
+                    </p>
+                  </div>
+                )}
+
                 {/* Left: UPI Scanner Poster */}
+                {method === "upi" && (
                 <div className="lg:col-span-5 bg-white rounded-3xl shadow-[0_10px_35px_rgba(13,35,58,0.08)] border border-slate-200/80 p-6 text-center">
                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-50 border border-amber-200/70 rounded-full text-[12px] font-bold text-amber-800 mb-4">
                     <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
@@ -606,6 +716,7 @@ export default function DonatePage() {
                     </a>
                   </div>
                 </div>
+                )}
 
                 {/* Right: Receipt Upload Form */}
                 <div className="lg:col-span-7 bg-white rounded-3xl shadow-[0_10px_35px_rgba(13,35,58,0.08)] border border-slate-200/80 p-6 sm:p-10">
@@ -618,25 +729,30 @@ export default function DonatePage() {
                     Upload Payment Receipt
                   </h2>
                   <p className="text-[13.5px] text-slate-500 mt-1.5">
-                    After completing the payment on your UPI app, please enter your transaction reference number and attach the screenshot.
+                    {method === "bank"
+                      ? "After completing the bank transfer, please enter your transaction reference (UTR) number and attach the payment screenshot or receipt."
+                      : "After completing the payment on your UPI app, please enter your transaction reference number and attach the screenshot."}
                   </p>
 
                   <form onSubmit={handleSubmitReceipt} className="mt-6 space-y-5">
                     {/* 12 Digit UTR Number */}
                     <div>
                       <label className="text-[13px] font-bold text-[#0D233A] block mb-1">
-                        12-Digit UPI Reference No. / UTR <span className="text-red-500">*</span>
+                        {method === "bank" ? "Bank Transaction Ref. No. / UTR" : "12-Digit UPI Reference No. / UTR"}{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
                         required
-                        placeholder="e.g. 429182749102"
+                        placeholder={method === "bank" ? "e.g. BARBN26123456789" : "e.g. 429182749102"}
                         value={utr}
                         onChange={(e) => setUtr(e.target.value)}
                         className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-[15px] font-mono text-[#0D233A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:bg-white transition-all tracking-wide"
                       />
                       <p className="text-[11.5px] text-slate-400 mt-1">
-                        You can find this 12-digit number in the payment details on GPay, PhonePe, or Paytm.
+                        {method === "bank"
+                          ? "Find the UTR / reference number in your net banking or bank app transaction details (12–22 characters)."
+                          : "You can find this 12-digit number in the payment details on GPay, PhonePe, or Paytm."}
                       </p>
                     </div>
 
@@ -776,7 +892,9 @@ export default function DonatePage() {
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-200/60">
-                  <span className="text-[13px] text-slate-500 font-medium">UPI UTR / Ref No.</span>
+                  <span className="text-[13px] text-slate-500 font-medium">
+                    {method === "bank" ? "Bank UTR / Ref No." : "UPI UTR / Ref No."}
+                  </span>
                   <span className="text-[13.5px] font-mono font-bold text-[#0D233A]">
                     {successData?.utr}
                   </span>
@@ -869,11 +987,19 @@ export default function DonatePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
                 <span className="text-[11.5px] font-bold text-slate-400 uppercase tracking-wider block">Beneficiary Name</span>
-                <span className="text-[14px] font-bold text-[#0D233A] mt-1 block">Muslim Legal Aid Trust India</span>
+                <span className="text-[14px] font-bold text-[#0D233A] mt-1 block">{BANK_DETAILS.accountHolder}</span>
               </div>
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
-                <span className="text-[11.5px] font-bold text-slate-400 uppercase tracking-wider block">Bank Name</span>
-                <span className="text-[14px] font-bold text-[#0D233A] mt-1 block">Bank of Baroda</span>
+                <span className="text-[11.5px] font-bold text-slate-400 uppercase tracking-wider block">Bank / Branch</span>
+                <span className="text-[14px] font-bold text-[#0D233A] mt-1 block">{BANK_DETAILS.bankName}, GTR Panipat</span>
+              </div>
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+                <span className="text-[11.5px] font-bold text-slate-400 uppercase tracking-wider block">Account Number ({BANK_DETAILS.accountType})</span>
+                <span className="text-[14px] font-mono font-bold text-[#0D233A] mt-1 block">{BANK_DETAILS.accountNumber}</span>
+              </div>
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+                <span className="text-[11.5px] font-bold text-slate-400 uppercase tracking-wider block">IFSC Code</span>
+                <span className="text-[14px] font-mono font-bold text-[#0D233A] mt-1 block">{BANK_DETAILS.ifsc}</span>
               </div>
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
                 <span className="text-[11.5px] font-bold text-slate-400 uppercase tracking-wider block">UPI VPA</span>

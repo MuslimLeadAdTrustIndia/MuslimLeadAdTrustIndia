@@ -32,7 +32,16 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!/^\d{12}$/.test(utr)) {
+    const isBank = form.get("method")?.toString() === "bank";
+    if (isBank) {
+      // IMPS: 12 digits, NEFT: 16 alphanumeric, RTGS: 22 alphanumeric.
+      if (!/^[A-Za-z0-9]{12,22}$/.test(utr)) {
+        return NextResponse.json(
+          { error: "Bank Transaction / UTR reference must be 12 to 22 letters or digits." },
+          { status: 400 }
+        );
+      }
+    } else if (!/^\d{12}$/.test(utr)) {
       return NextResponse.json(
         { error: "UPI Reference / UTR must be exactly 12 digits." },
         { status: 400 }
@@ -40,7 +49,7 @@ export async function POST(req: Request) {
     }
 
     const amount = Number(amountStr);
-    if (isNaN(amount) || amount <= 0) {
+    if (isNaN(amount) || amount < 1) {
       return NextResponse.json({ error: "Invalid donation amount." }, { status: 400 });
     }
 
@@ -107,7 +116,7 @@ export async function POST(req: Request) {
         utr_number: utr,
         receipt_url: receiptUrl,
         receipt_file_id: receiptFileId,
-        mode: "UPI",
+        mode: isBank ? "Bank Transfer" : "UPI",
         status: "Pending",
         notes,
       })
