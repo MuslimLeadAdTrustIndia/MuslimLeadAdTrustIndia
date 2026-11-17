@@ -61,21 +61,34 @@ export default function AboutPage() {
                     d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                   />
                 </svg>
-                <span>Government Registered Deed</span>
+                <span>Government Registered Trust</span>
               </div>
               <div className="mt-3.5 space-y-1.5">
                 <div className="flex justify-between">
                   <span className="text-slate-400">Deed No:</span>
-                  <span className="font-semibold text-white">16818</span>
+                  <span className="font-semibold text-white">16818 (Panipat)</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Jurisdiction:</span>
-                  <span className="text-white">Sub-Registrar Panipat</span>
+                  <span className="text-slate-400">80G Status:</span>
+                  <span className="font-semibold text-emerald-300">Approved (Tax Deductible)</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Authority:</span>
-                  <span className="text-white">Govt. of Haryana</span>
+                  <span className="text-slate-400">MCA CSR-1:</span>
+                  <span className="font-semibold text-purple-300">CSR00120032</span>
                 </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">e-Anudaan ID:</span>
+                  <span className="font-semibold text-amber-300">HR/00044484</span>
+                </div>
+              </div>
+              <div className="mt-3 pt-2.5 border-t border-white/10 text-center">
+                <Link
+                  href="/compliance"
+                  className="text-[12px] font-bold text-[#00A3FF] hover:text-white transition-colors inline-flex items-center gap-1"
+                >
+                  <span>View All 4 Certificates (PDF)</span>
+                  <span>→</span>
+                </Link>
               </div>
             </div>
           }
@@ -256,6 +269,34 @@ export default function AboutPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Legal & Compliance Highlight Banner */}
+        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-[0_8px_30px_rgba(13,35,58,0.06)] flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <span className="text-[12px] font-bold tracking-[0.16em] uppercase text-[#0066FF] block mb-1">
+                GOVERNMENT REGISTRATIONS &amp; 80G APPROVAL
+              </span>
+              <h3 className="text-2xl sm:text-[26px] font-extrabold text-[#0D233A]">
+                Full Legal Transparency &amp; Compliance
+              </h3>
+              <p className="mt-2 text-[14px] text-[#4A5D73] max-w-2xl leading-relaxed">
+                The Trust is officially registered with the Income Tax Department (12A &amp; 80G Tax Exemption), Ministry of Corporate Affairs (CSR-1: CSR00120032), and Ministry of Social Justice (e-Anudaan NGO ID: HR/00044484).
+              </p>
+            </div>
+            <div className="shrink-0">
+              <Link
+                href="/compliance"
+                className="inline-flex items-center gap-2 bg-[#0066FF] hover:bg-[#0052CC] text-white font-bold text-[14px] px-6 py-3.5 rounded-full shadow-[0_4px_14px_rgba(0,102,255,0.28)] transition-all"
+              >
+                <span>View &amp; Download Certificates</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
+            </div>
           </div>
         </section>
 

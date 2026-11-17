@@ -37,6 +37,12 @@ export default function Footer() {
                 >
                   Office Bearers
                 </a>
+                <Link
+                  href="/compliance"
+                  className="hover:text-[#0066FF] text-emerald-700 font-semibold transition-colors"
+                >
+                  80G &amp; Compliance
+                </Link>
                 <a
                   href="/our-aims"
                   className="hover:text-[#0066FF] font-semibold text-[#0066FF] transition-colors"
@@ -244,6 +250,28 @@ export default function Footer() {
               Together we can build a fairer and more compassionate society.
             </p>
           </div>
+        </div>
+
+        {/* Statutory Compliance Bar */}
+        <div className="mt-10 pt-6 border-t border-slate-200/70 text-[12px] text-slate-500 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1">
+            <span><strong>Regd. Trust Deed:</strong> No. 16818 (Panipat)</span>
+            <span className="hidden sm:inline">•</span>
+            <span><strong>PAN:</strong> AAKTM9786F</span>
+            <span className="hidden sm:inline">•</span>
+            <span><strong>80G Tax Exemption URN:</strong> AAKTM9786FF20261</span>
+            <span className="hidden sm:inline">•</span>
+            <span><strong>MCA CSR-1:</strong> CSR00120032</span>
+            <span className="hidden sm:inline">•</span>
+            <span><strong>NGO ID (MSJE):</strong> HR/00044484</span>
+          </div>
+          <Link
+            href="/compliance"
+            className="text-[#0066FF] hover:underline font-bold shrink-0 inline-flex items-center gap-1"
+          >
+            <span>View All Legal Certificates</span>
+            <span>→</span>
+          </Link>
         </div>
       </div>
     </footer>

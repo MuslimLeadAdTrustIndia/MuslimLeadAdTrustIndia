@@ -46,7 +46,7 @@ export default function DonationSection({ donation }: { donation?: DonationData 
                   "Your support helps us provide legal aid, support families, run awareness programs and work towards the rehabilitation of Muslim prisoners and needy communities."}
               </p>
 
-              <div className="mt-5 sm:mt-6">
+              <div className="mt-5 sm:mt-6 flex flex-wrap items-center gap-3">
                 <Link
                   href="/donate"
                   className="inline-flex items-center gap-2.5 bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-semibold px-6 py-3 rounded-full shadow-[0_6px_18px_rgba(0,102,255,0.28)] transition-all"
@@ -65,6 +65,16 @@ export default function DonationSection({ donation }: { donation?: DonationData 
                       d="M14 5l7 7m0 0l-7 7m7-7H3"
                     />
                   </svg>
+                </Link>
+
+                <Link
+                  href="/compliance"
+                  className="inline-flex items-center gap-1.5 text-[12px] font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/90 px-3.5 py-2.5 rounded-full transition-colors"
+                >
+                  <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>80G Tax Deductible &amp; CSR Approved</span>
                 </Link>
               </div>
             </div>

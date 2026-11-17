@@ -233,6 +233,49 @@ export default function DonatePage() {
             <MembershipForm />
           ) : (
           <>
+          {/* 80G Tax Exemption Notice Banner */}
+          <div className="max-w-3xl mx-auto mb-6 p-4 sm:p-4.5 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border border-emerald-200/90 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <div>
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <span className="text-[13.5px] font-extrabold text-[#0D233A]">
+                    Tax Exemption under Section 80G
+                  </span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 bg-emerald-600 text-white rounded-full">
+                    Approved
+                  </span>
+                </div>
+                <p className="text-[12px] text-slate-600 mt-0.5">
+                  Your donations are tax deductible. URN: <span className="font-mono font-bold text-[#0D233A]">AAKTM9786FF20261</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <a
+                href="/documents/80G-provisional-tax-exemption.pdf"
+                download="Muslim-Legal-Aid-Trust-80G-Tax-Exemption.pdf"
+                className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[12px] font-bold transition-all shadow-sm flex items-center gap-1.5"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <span>80G PDF</span>
+              </a>
+              <Link
+                href="/compliance"
+                className="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-white text-slate-700 text-[12px] font-semibold transition-colors"
+              >
+                All Approvals →
+              </Link>
+            </div>
+          </div>
+
           {/* Stepper Progress Indicator */}
           <div className="max-w-3xl mx-auto mb-8">
             <div className="flex items-center justify-between relative">
@@ -1010,6 +1053,174 @@ export default function DonatePage() {
                 <Link href="/contact" className="text-[14px] font-bold text-[#0066FF] hover:underline mt-1 block">
                   Contact Office →
                 </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Legal Transparency & Certificates Section */}
+        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+          <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-10 shadow-sm">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+              <div>
+                <span className="text-[12px] font-bold uppercase tracking-[0.16em] text-[#0066FF] block mb-1">
+                  OFFICIAL GOVERNMENT ACCREDITATIONS
+                </span>
+                <h3 className="text-[20px] sm:text-[24px] font-extrabold text-[#0D233A]">
+                  Statutory Registrations &amp; Downloadable Certificates
+                </h3>
+                <p className="text-[13.5px] text-slate-500 mt-1">
+                  We are committed to absolute financial and legal integrity. Download official signed copies below:
+                </p>
+              </div>
+              <Link
+                href="/compliance"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-blue-50 text-[#0066FF] hover:bg-blue-100 font-bold text-[13px] transition-colors shrink-0"
+              >
+                <span>View Full Compliance Details</span>
+                <span>→</span>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+              {/* 80G */}
+              <div className="p-5 rounded-2xl bg-slate-50/80 border border-slate-200/70 flex flex-col justify-between hover:bg-white hover:shadow-md transition-all">
+                <div>
+                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">
+                    Tax Exemption
+                  </span>
+                  <h4 className="text-[15px] font-bold text-[#0D233A] mt-2">
+                    80G Approval Order
+                  </h4>
+                  <p className="text-[11.5px] text-slate-500 mt-0.5">
+                    Income Tax Department
+                  </p>
+                  <p className="text-[12px] font-mono font-bold text-[#0D233A] mt-2">
+                    URN: AAKTM9786FF20261
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center gap-2">
+                  <a
+                    href="/documents/80G-provisional-tax-exemption.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 text-center py-1.5 px-2 bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-[12px] font-bold text-slate-700 transition-colors"
+                  >
+                    View
+                  </a>
+                  <a
+                    href="/documents/80G-provisional-tax-exemption.pdf"
+                    download="Muslim-Legal-Aid-Trust-80G-Certificate.pdf"
+                    className="flex-1 text-center py-1.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[12px] font-bold transition-colors"
+                  >
+                    Download
+                  </a>
+                </div>
+              </div>
+
+              {/* 12A */}
+              <div className="p-5 rounded-2xl bg-slate-50/80 border border-slate-200/70 flex flex-col justify-between hover:bg-white hover:shadow-md transition-all">
+                <div>
+                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-800">
+                    NPO Registration
+                  </span>
+                  <h4 className="text-[15px] font-bold text-[#0D233A] mt-2">
+                    12A Registration Order
+                  </h4>
+                  <p className="text-[11.5px] text-slate-500 mt-0.5">
+                    Income Tax Department
+                  </p>
+                  <p className="text-[12px] font-mono font-bold text-[#0D233A] mt-2">
+                    URN: AAKTM9786FE20261
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center gap-2">
+                  <a
+                    href="/documents/12A-provisional-registration.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 text-center py-1.5 px-2 bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-[12px] font-bold text-slate-700 transition-colors"
+                  >
+                    View
+                  </a>
+                  <a
+                    href="/documents/12A-provisional-registration.pdf"
+                    download="Muslim-Legal-Aid-Trust-12A-Registration.pdf"
+                    className="flex-1 text-center py-1.5 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[12px] font-bold transition-colors"
+                  >
+                    Download
+                  </a>
+                </div>
+              </div>
+
+              {/* MCA CSR-1 */}
+              <div className="p-5 rounded-2xl bg-slate-50/80 border border-slate-200/70 flex flex-col justify-between hover:bg-white hover:shadow-md transition-all">
+                <div>
+                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 text-purple-800">
+                    Corporate CSR
+                  </span>
+                  <h4 className="text-[15px] font-bold text-[#0D233A] mt-2">
+                    MCA CSR-1 Approval
+                  </h4>
+                  <p className="text-[11.5px] text-slate-500 mt-0.5">
+                    Ministry of Corporate Affairs
+                  </p>
+                  <p className="text-[12px] font-mono font-bold text-[#0D233A] mt-2">
+                    Reg No: CSR00120032
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center gap-2">
+                  <a
+                    href="/documents/mca-csr-registration-approval.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 text-center py-1.5 px-2 bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-[12px] font-bold text-slate-700 transition-colors"
+                  >
+                    View
+                  </a>
+                  <a
+                    href="/documents/mca-csr-registration-approval.pdf"
+                    download="Muslim-Legal-Aid-Trust-CSR-Approval.pdf"
+                    className="flex-1 text-center py-1.5 px-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-[12px] font-bold transition-colors"
+                  >
+                    Download
+                  </a>
+                </div>
+              </div>
+
+              {/* e-Anudaan */}
+              <div className="p-5 rounded-2xl bg-slate-50/80 border border-slate-200/70 flex flex-col justify-between hover:bg-white hover:shadow-md transition-all">
+                <div>
+                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">
+                    Social Justice
+                  </span>
+                  <h4 className="text-[15px] font-bold text-[#0D233A] mt-2">
+                    e-Anudaan Enrollment
+                  </h4>
+                  <p className="text-[11.5px] text-slate-500 mt-0.5">
+                    Ministry of Social Justice &amp; Emp.
+                  </p>
+                  <p className="text-[12px] font-mono font-bold text-[#0D233A] mt-2">
+                    NGO ID: HR/00044484
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center gap-2">
+                  <a
+                    href="/documents/e-anudaan-enrollment-certificate.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 text-center py-1.5 px-2 bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-[12px] font-bold text-slate-700 transition-colors"
+                  >
+                    View
+                  </a>
+                  <a
+                    href="/documents/e-anudaan-enrollment-certificate.pdf"
+                    download="Muslim-Legal-Aid-Trust-eAnudaan-Certificate.pdf"
+                    className="flex-1 text-center py-1.5 px-2 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-[12px] font-bold transition-colors"
+                  >
+                    Download
+                  </a>
+                </div>
               </div>
             </div>
           </div>

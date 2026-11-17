@@ -113,6 +113,23 @@ export default function Navbar() {
                     Executive leadership and national committee
                   </div>
                 </Link>
+
+                <Link
+                  href="/compliance"
+                  className="block p-2.5 rounded-xl hover:bg-[#F0F6FF] transition-colors group/item"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[13.5px] font-bold text-[#0D233A] group-hover/item:text-[#0066FF] transition-colors">
+                      Legal &amp; Compliance
+                    </span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                      80G / 12A
+                    </span>
+                  </div>
+                  <div className="text-[12px] text-[#64748B] mt-0.5">
+                    80G tax exemption, 12A &amp; CSR approvals
+                  </div>
+                </Link>
               </div>
             </div>
           </div>
@@ -329,6 +346,16 @@ export default function Navbar() {
                   className="block px-3 py-2 rounded-lg text-[13.5px] font-medium text-[#4A5D73] hover:text-[#0066FF] hover:bg-slate-50"
                 >
                   Office Bearers
+                </Link>
+                <Link
+                  href="/compliance"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between px-3 py-2 rounded-lg text-[13.5px] font-medium text-[#4A5D73] hover:text-[#0066FF] hover:bg-slate-50"
+                >
+                  <span>Legal &amp; Compliance</span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                    80G / 12A
+                  </span>
                 </Link>
               </div>
             )}
