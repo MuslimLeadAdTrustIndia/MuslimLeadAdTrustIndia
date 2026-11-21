@@ -137,7 +137,9 @@ export default function GallerySection({ images }: { images?: GalleryImageItem[]
               src={item.url}
               alt={item.alt_en}
               draggable={false}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 pointer-events-none select-none"
+              className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 pointer-events-none select-none ${
+                item.category === "Press & Media" ? "object-top" : ""
+              }`}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0D233A]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4 pointer-events-none">
               <p className="text-white text-[12.5px] font-semibold line-clamp-2">

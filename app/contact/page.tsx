@@ -4,7 +4,11 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import PageHero from "../components/PageHero";
+import { useSiteSettings } from "../components/SiteSettingsContext";
+
 export default function ContactPage() {
+  const { general } = useSiteSettings();
+  const phoneHref = `tel:${(general.phone || "").replace(/\s+/g, "")}`;
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -199,9 +203,8 @@ export default function ContactPage() {
                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    <span className="text-slate-200">
-                      Chamber No. 177, 1st Floor, Lawyers Chambers, <br />
-                      Distt. Court, Panipat - 132103, Haryana, India
+                    <span className="text-slate-200 whitespace-pre-line">
+                      {general.address}
                     </span>
                   </li>
 
@@ -220,10 +223,10 @@ export default function ContactPage() {
                       />
                     </svg>
                     <a
-                      href="tel:+918059311777"
+                      href={phoneHref}
                       className="text-slate-200 hover:text-white transition-colors"
                     >
-                      +91 80593 11777
+                      {general.phone}
                     </a>
                   </li>
 
@@ -242,10 +245,10 @@ export default function ContactPage() {
                       />
                     </svg>
                     <a
-                      href="mailto:muslimlegalaidtrustindia80@gmail.com"
+                      href={`mailto:${general.email}`}
                       className="text-slate-200 hover:text-white transition-colors break-all"
                     >
-                      muslimlegalaidtrustindia80@gmail.com
+                      {general.email}
                     </a>
                   </li>
 
@@ -263,9 +266,8 @@ export default function ContactPage() {
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span className="text-slate-200">
-                      Mon - Sat: 10:00 AM - 6:00 PM <br />
-                      Sunday: Closed
+                    <span className="text-slate-200 whitespace-pre-line">
+                      {general.officeHours}
                     </span>
                   </li>
                 </ul>

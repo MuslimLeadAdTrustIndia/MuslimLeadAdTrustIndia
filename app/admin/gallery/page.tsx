@@ -14,7 +14,7 @@ interface GalleryImage {
   category: string;
 }
 
-const categories = ["All", "Legal Aid", "Prisoners Welfare", "Community", "Education", "Health"];
+const categories = ["All", "Press & Media", "Legal Aid", "Prisoners Welfare", "Community", "Education", "Health"];
 
 function filenameToAlt(filename: string): string {
   const withoutExt = filename.replace(/\.[^/.]+$/, "");

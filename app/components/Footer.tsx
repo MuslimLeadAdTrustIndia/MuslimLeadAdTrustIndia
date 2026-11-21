@@ -1,8 +1,16 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { TrustLogo } from "./Navbar";
+import { useSiteSettings } from "./SiteSettingsContext";
 
 export default function Footer() {
+  const { general, social } = useSiteSettings();
+  const phoneHref = `tel:${(general.phone || "").replace(/\s+/g, "")}`;
+  const youtubeUrl =
+    social.youtube || "https://youtube.com/@muslimlegalaidtrustindia?si=gX6Sqkiu2Pm6krZl";
+
   return (
     <footer
       id="contact"
@@ -107,10 +115,10 @@ export default function Footer() {
                   />
                 </svg>
                 <a
-                  href="mailto:muslimlegalaidtrustindia80@gmail.com"
+                  href={`mailto:${general.email}`}
                   className="hover:text-[#0066FF] transition-colors break-all"
                 >
-                  muslimlegalaidtrustindia80@gmail.com
+                  {general.email}
                 </a>
               </li>
 
@@ -129,10 +137,10 @@ export default function Footer() {
                   />
                 </svg>
                 <a
-                  href="tel:+918059311777"
+                  href={phoneHref}
                   className="hover:text-[#0066FF] transition-colors"
                 >
-                  +91 80593 11777
+                  {general.phone}
                 </a>
               </li>
 
@@ -156,10 +164,7 @@ export default function Footer() {
                     d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                <span>
-                  Chamber No. 177, 1st Floor, Lawyers Chambers, <br />
-                  Distt. Court, Panipat - 132103, Haryana, India
-                </span>
+                <span className="whitespace-pre-line">{general.address}</span>
               </li>
             </ul>
           </div>
@@ -171,79 +176,89 @@ export default function Footer() {
             </h3>
             <div className="flex items-center gap-2.5">
               {/* Facebook */}
-              <a
-                href="https://www.facebook.com/share/1HprBS1mQN/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-                className="w-8 h-8 rounded-full bg-[#1877F2] hover:opacity-90 text-white flex items-center justify-center transition-opacity"
-              >
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
-                </svg>
-              </a>
+              {social.facebook && (
+                <a
+                  href={social.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="w-8 h-8 rounded-full bg-[#1877F2] hover:opacity-90 text-white flex items-center justify-center transition-opacity"
+                >
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
+                  </svg>
+                </a>
+              )}
 
               {/* Instagram */}
-              <a
-                href="https://www.instagram.com/muslimlegalaidtrustindia?cplk=MXBoNGJ6Zmk3MHV3OA=="
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="w-8 h-8 rounded-full bg-[#0D233A] hover:bg-[#E1306C] text-white flex items-center justify-center transition-colors"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              {social.instagram && (
+                <a
+                  href={social.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="w-8 h-8 rounded-full bg-[#0D233A] hover:bg-[#E1306C] text-white flex items-center justify-center transition-colors"
                 >
-                  <rect
-                    x="2"
-                    y="2"
-                    width="20"
-                    height="20"
-                    rx="5"
-                    ry="5"
-                    strokeWidth="2"
-                  />
-                  <path
-                    d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"
-                    strokeWidth="2"
-                  />
-                  <line
-                    x1="17.5"
-                    y1="6.5"
-                    x2="17.51"
-                    y2="6.5"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </a>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <rect
+                      x="2"
+                      y="2"
+                      width="20"
+                      height="20"
+                      rx="5"
+                      ry="5"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"
+                      strokeWidth="2"
+                    />
+                    <line
+                      x1="17.5"
+                      y1="6.5"
+                      x2="17.51"
+                      y2="6.5"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </a>
+              )}
 
               {/* Twitter / X */}
-              <a
-                href="#twitter"
-                aria-label="Twitter"
-                className="w-8 h-8 rounded-full bg-[#0D233A] hover:bg-[#0066FF] text-white flex items-center justify-center transition-colors"
-              >
-                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
+              {social.twitter && (
+                <a
+                  href={social.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Twitter"
+                  className="w-8 h-8 rounded-full bg-[#0D233A] hover:bg-[#0066FF] text-white flex items-center justify-center transition-colors"
+                >
+                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                </a>
+              )}
 
               {/* YouTube */}
-              <a
-                href="https://youtube.com/@muslimlegalaidtrustindia?si=gX6Sqkiu2Pm6krZl"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="YouTube"
-                className="w-8 h-8 rounded-full bg-[#FF0000] hover:opacity-90 text-white flex items-center justify-center transition-opacity"
-              >
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                </svg>
-              </a>
+              {youtubeUrl && (
+                <a
+                  href={youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className="w-8 h-8 rounded-full bg-[#FF0000] hover:opacity-90 text-white flex items-center justify-center transition-opacity"
+                >
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                  </svg>
+                </a>
+              )}
             </div>
 
             <p className="mt-4 text-[12px] leading-[1.6] text-[#687B90]">

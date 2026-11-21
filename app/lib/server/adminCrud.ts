@@ -1,6 +1,6 @@
 import "server-only";
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getSession } from "./session";
 import { supabaseAdmin } from "./supabase";
 
@@ -41,6 +41,7 @@ export function pick(body: Record<string, unknown>, cols: string[]) {
 }
 
 export function refreshSite() {
+  revalidateTag("site_content", { expire: 0 });
   revalidatePath("/", "layout");
 }
 

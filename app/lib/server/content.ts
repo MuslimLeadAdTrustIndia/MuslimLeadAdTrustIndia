@@ -1,7 +1,11 @@
 import "server-only";
+import { cacheLife, cacheTag } from "next/cache";
 import { supabasePublic } from "./supabase";
 
 export async function getSiteContent<T extends Record<string, unknown>>(key: string, fallback: T): Promise<T> {
+  "use cache";
+  cacheTag("site_content", `site_content_${key}`);
+  cacheLife("minutes");
   try {
     const sb = supabasePublic();
     const { data } = await sb.from("site_content").select("value").eq("key", key).maybeSingle();

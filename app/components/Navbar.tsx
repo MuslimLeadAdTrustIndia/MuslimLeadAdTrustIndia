@@ -3,32 +3,46 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSiteSettings } from "./SiteSettingsContext";
 
 export function TrustLogo() {
+  const { general } = useSiteSettings();
+  const orgName = general.orgName?.trim() || "Muslim Legal Aid Trust (India)";
+  const tagline = general.tagline?.trim() || "Justice • Support • Rehabilitation";
+  const isDefaultName = orgName.toLowerCase() === "muslim legal aid trust (india)";
+
   return (
     <div className="flex items-center gap-3">
       {/* Official Trust Logo Emblem */}
       <div className="w-13 h-13 sm:w-16 sm:h-16 shrink-0 flex items-center justify-center">
         <img
           src="/images/logo-emblem.png"
-          alt="Muslim Legal Aid Trust (India) Logo"
+          alt={`${orgName} Logo`}
           className="w-full h-full object-contain"
         />
       </div>
 
       {/* Brand Text */}
       <div className="flex flex-col leading-tight">
-        <span className="text-[14px] sm:text-[16px] font-extrabold tracking-tight text-[#0D233A] uppercase">
-          MUSLIM LEGAL AID
-        </span>
-        <span className="text-[14px] sm:text-[16px] font-extrabold tracking-tight text-[#0D233A] uppercase -mt-0.5">
-          TRUST (INDIA)
-        </span>
+        {isDefaultName ? (
+          <>
+            <span className="text-[14px] sm:text-[16px] font-extrabold tracking-tight text-[#0D233A] uppercase">
+              MUSLIM LEGAL AID
+            </span>
+            <span className="text-[14px] sm:text-[16px] font-extrabold tracking-tight text-[#0D233A] uppercase -mt-0.5">
+              TRUST (INDIA)
+            </span>
+          </>
+        ) : (
+          <span className="text-[14px] sm:text-[16px] font-extrabold tracking-tight text-[#0D233A] uppercase max-w-[210px]">
+            {orgName}
+          </span>
+        )}
         <span className="font-hindi text-[11.5px] sm:text-[13px] font-bold text-[#9A6B26] mt-0.5">
           मुस्लिम कानूनी सहायता दल भारत
         </span>
         <span className="text-[9px] sm:text-[9.5px] font-medium text-[#52657A] tracking-wide mt-0.5">
-          Justice • Support • Rehabilitation
+          {tagline}
         </span>
       </div>
     </div>

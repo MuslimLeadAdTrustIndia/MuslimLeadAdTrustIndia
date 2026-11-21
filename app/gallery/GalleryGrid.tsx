@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 interface GalleryImageItem {
   id: number;
@@ -12,11 +12,52 @@ interface GalleryImageItem {
 
 export default function GalleryGrid({ images }: { images: GalleryImageItem[] }) {
   const [activeImage, setActiveImage] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    images.forEach((img) => {
+      if (img.category) set.add(img.category);
+    });
+    const sorted = Array.from(set).sort((a, b) => {
+      if (a === "Press & Media") return -1;
+      if (b === "Press & Media") return 1;
+      return a.localeCompare(b);
+    });
+    return ["All", ...sorted];
+  }, [images]);
+
+  const filteredImages =
+    activeCategory === "All"
+      ? images
+      : images.filter((item) => item.category === activeCategory);
 
   return (
     <>
+      {categories.length > 2 && (
+        <div className="flex flex-wrap items-center gap-2 mb-6">
+          {categories.map((cat) => {
+            const isActive = activeCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                className={`px-4 py-1.5 rounded-full text-[13px] font-bold transition-all cursor-pointer ${
+                  isActive
+                    ? "bg-[#0D233A] text-white shadow-sm"
+                    : "bg-slate-100 text-[#4A5D73] hover:bg-slate-200/80"
+                }`}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
-        {images.map((item, idx) => (
+        {filteredImages.map((item, idx) => (
           <button
             key={item.id || idx}
             type="button"
@@ -26,7 +67,9 @@ export default function GalleryGrid({ images }: { images: GalleryImageItem[] }) 
             <img
               src={item.url}
               alt={item.alt_en}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${
+                item.category === "Press & Media" ? "object-top" : ""
+              }`}
             />
             <div className="absolute inset-0 bg-[#0D233A]/0 group-hover:bg-[#0D233A]/50 transition-colors flex flex-col justify-end p-3">
               <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white text-[12px] font-semibold line-clamp-2">
@@ -57,7 +100,7 @@ export default function GalleryGrid({ images }: { images: GalleryImageItem[] }) 
           <img
             src={activeImage}
             alt="Enlarged view"
-            className="max-w-[92vw] max-h-[85vh] rounded-2xl shadow-2xl object-contain"
+            className="max-w-[92vw] max-h-[85vh] rounded-2xl shadow-2xl object-contain bg-white"
             onClick={(e) => e.stopPropagation()}
           />
         </div>
